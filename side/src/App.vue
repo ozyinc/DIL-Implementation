@@ -10,6 +10,9 @@
 
     <button @click="helloWor(another)"> Click me </button>
 
+    <router-link to="/foo"> CIAo </router-link>
+    <router-link to="/foo/2"> CIAo </router-link>
+    <router-view> </router-view>
   </div>
 </template>
 
@@ -28,7 +31,18 @@ export default {
     return {
       variablename: 'iii',
       another: 'rrr',
-      list: [1,2,3,4,5,6]
+      list: [1,2,3,4,5,6],
+      exercise: [
+        {
+          id: 1,
+          difficulty: 1,
+          subID:1,
+          type:'HANDWRITTEN',
+          content:[
+
+          ]
+        }
+      ]
     }
   },
   computed: {

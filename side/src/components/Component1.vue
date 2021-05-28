@@ -2,22 +2,19 @@
   <div >
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
 
-    <h1> black title </h1>
-    <ul>
-        <li v-for="(xyz, index) in list" :key="index">{{xyz}}</li>
-    </ul>
-    <hello-2 msg="Welcome to Your Vue.js App"/>
+    <h1> black title {{$route.params.id}}</h1>
+    
+    <hello-2 msg="IACopois"/>
 
-    <button @click="helloWor(another)"> Click me </button>
+    
 
   </div>
 </template>
 
 <script>
-import Hello2 from './components/HelloWorld.vue'
+import Hello2 from './HelloWorld.vue'
 
 export default {
-  name: 'App',
   components: {
     Hello2
   },
