@@ -1,7 +1,6 @@
 <template>
-  <div class="multiple-choice">
-    <message>
-    {{question.content.title}}
+  <div class="multiple-choice" v-if="question">
+    <message>{{question.content.title}}
     <p> {{question.content.description}}</p></message>
 
 
@@ -15,11 +14,18 @@
 </template>
 
 <script>
-import Message from './Message.vue'
+import Message from './Message'
+
 export default {
-  components: { Message },
+  name: 'MultipleChoice',
+  components: {
+    Message
+  },
   props: {
     question: Object
+  },
+  mounted() {
+    console.log("this is the question:" , this.question.content)
   }
 }
 </script>

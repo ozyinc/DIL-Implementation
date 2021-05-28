@@ -1,83 +1,14 @@
 <template>
   <div id="app">
- 
-    <multiple-choice :question="exercise[1]"></multiple-choice>
-    <handwriting :question="exercise[0]"></handwriting>
-    
-    
+    <router-link to="/questions/0">QuestionsPage</router-link>
     <router-view> </router-view>
   </div>
 </template>
 
 <script>
 
-import MultipleChoice from './components/MultipleChoice.vue';
-import Handwriting from './components/Handwriting.vue';
-
 export default {
-  name: 'App',
-  components: {
-    MultipleChoice,
-    Handwriting,
-  
-  },
-  
-  apollo() {
-
-  },
-  data() {
-    return {
-      variablename: 'iii',
-      another: 'rrr',
-      list: [1,2,3,4,5,6],
-
-      exercise: [
-        {
-          id: 1,
-          difficulty: 1,
-          subID:1,
-          type:'HANDWRITTEN',
-          content:{
-            title:'question1',
-            description: 'blabla',
-            image: 'URL',
-            correctAnswer: 'ciao'
-          }
-        },
-
-        {
-          id: 2,
-          difficulty: 2,
-          subID:1,
-          type:'GRAMMAR',
-          content:{
-            title:'Question2',
-            description: 'Question content',
-            image: 'URL2',
-            options:['aqua', 'acua', 'acqua', 'aqcua'],
-            correctAnswer: 2
-          }
-        }
-
-      ]
-
-
-    }
-  },
-  computed: {
-    doublelist() {
-      return this.list.map(x => x * 2);
-    }
-  },
-  methods: {
-    
-    helloWor: function(hghg) {
-      console.log(hghg)
-      console.log(this.variablename)      
-
-      console.log(this.doublelist)
-    }
-  }
+  name: 'App'
 }
 </script>
 
