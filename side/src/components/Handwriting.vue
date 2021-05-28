@@ -2,18 +2,12 @@
   <div class="multiple-choice" v-if="question">
     {{question.content.title}}
     <p> {{question.content.description}}</p>
-     <div v-for="(q, index) in question.content.options" :key="index">
-        <input type="checkbox"   :name="q">
-        <label :for="q">  {{q}} </label>
-    </div>
   </div>
 </template>
 
 <script>
-
-
 export default {
-  name: 'MultipleChoice',
+  name: 'Handwriting',
   props: {
     question: Object
   },
