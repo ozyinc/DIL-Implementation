@@ -1,21 +1,8 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+ 
 
-    <h1> black title </h1>
-    <ul>
-        <li v-for="(xyz, index) in list" :key="index">{{xyz}}</li>
-    </ul>
-
-    <hello-2 msg="Welcome to Your Vue.js App"/>
-
-    <!--<button @click="helloWor(another)"> Click me </button> -->
-
-    <router-link to="/foo"> CIAo </router-link>
-    <router-link to="/foo/2" :question='exercise[1]'> CIAo </router-link>
-    <router-link :to="{path:  '/foo/2', params:exercise[1]}"
-    > CIAo </router-link>
-
+    <message><multiple-choice :question="exercise[1]"></multiple-choice></message>
 
 
     <router-view> </router-view>
@@ -23,12 +10,15 @@
 </template>
 
 <script>
-import Hello2 from './components/HelloWorld.vue'
+import Message from './components/Message.vue';
+import MultipleChoice from './components/MultipleChoice.vue';
 
 export default {
   name: 'App',
   components: {
-    Hello2
+   // Hello2,
+    MultipleChoice,
+    Message
   },
   apollo() {
 

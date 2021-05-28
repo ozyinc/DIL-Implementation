@@ -1,15 +1,14 @@
 <template>
-  <div class="multiple-choice">
-    {{question.content.title}}
-    <p> {{question.content.description}}</p>
-     <div v-for="(q, index) in question.content.options" :key="index">
-        <input type="checkbox"   :name="q">
-        <label :for="q">  {{q}} </label>
+  <div class="message">
+
+<button type="button">Read</button>
+<slot>  </slot>
+
     </div>
-  </div>
 </template>
 
 <script>
+
 export default {
   props: {
     question: Object
@@ -19,6 +18,19 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+button {
+    background: grey;
+  border: ;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 160px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
 h1 {
   margin: 40px 0 0;
   color: red
