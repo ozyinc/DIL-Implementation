@@ -1,8 +1,6 @@
 <template>
-  <div class="question-page" v-if="questions">
-    <div v-for="(question, index) in questions" :key="index">
-        <component :is="question.type" v-bind="{ question }"></component>
-    </div>
+  <div class="question-page" v-if="question">
+    <component :is="question.type" v-bind="{ question }"></component>
   </div>
 </template>
 
@@ -20,9 +18,10 @@ export default {
       questions: []
     }; 
   },
-  components: {
-    Handwriting,
-    MultipleChoice
+  computed: {
+    question() {
+      return this.questions[this.$route.params.index] || 0;
+    }
   },
   methods: {
     getQuestions: function() {
@@ -59,6 +58,10 @@ export default {
   },
   created() {
     this.getQuestions();
+  },
+  components: {
+    Handwriting,
+    MultipleChoice
   }
 }
 </script>
