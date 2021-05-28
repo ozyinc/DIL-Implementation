@@ -1,9 +1,10 @@
 <template>
   <div id="app">
  
-
-    <message><multiple-choice :question="exercise[1]"></multiple-choice></message>
-
+    <p>ciao</p>
+    <multiple-choice :question="exercise[1]"></multiple-choice>
+    <message> </message>
+    <p>ciao</p>
 
     <router-view> </router-view>
   </div>
@@ -49,8 +50,8 @@ export default {
           subID:1,
           type:'GRAMMAR',
           content:{
-            title:'question2',
-            description: 'blablablao',
+            title:'Question2',
+            description: 'Question content',
             image: 'URL2',
             options:['aqua', 'acua', 'acqua', 'aqcua'],
             correctAnswer: 2
@@ -80,6 +81,7 @@ export default {
 
 <style>
 #app {
+  background-color:#e3ded1;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

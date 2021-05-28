@@ -1,16 +1,26 @@
 <template>
   <div class="multiple-choice">
+    <message>
     {{question.content.title}}
-    <p> {{question.content.description}}</p>
-     <div v-for="(q, index) in question.content.options" :key="index">
-        <input type="checkbox"   :name="q">
+    <p> {{question.content.description}}</p></message>
+
+    <canvas id="myCanvas" width="240" height="80"
+style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<message>
+     <div v-for="(q, index) in question.content.options" :key="index" align="left">
+        <input type="checkbox"    :name="q">
         <label :for="q">  {{q}} </label>
-    </div>
+    </div></message>
   </div>
 </template>
 
 <script>
+import Message from './Message.vue'
 export default {
+  components: { Message },
   props: {
     question: Object
   }
