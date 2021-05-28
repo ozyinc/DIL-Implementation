@@ -4,6 +4,8 @@ from collections import OrderedDict
 from typing import List, Optional, Union
 from enum import Enum
 from os import getenv
+from dotenv import load_dotenv
+load_dotenv()
 
 skill_count = int(getenv("SKILL_COUNT", "200"))
 subject_count = int(getenv("SUBJECT_COUNT", "50"))
