@@ -1,18 +1,17 @@
 <template>
-  <div class="multiple-choice" v-if="question">
-    <message>{{question.content.title}}
-    <p> {{question.content.description}}</p></message>
+  <div class="multiple-choice">
+    <message :title="question.content.title" :description="question.content.description" :image="question.content.image">
+    </message>
 
-    <canvas id="myCanvas" width="240" height="80"
-style="border:1px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.
-</canvas>
 
-<message>
-     <div v-for="(q, index) in question.content.options" :key="index" align="left">
-        <input type="checkbox"    :name="q">
-        <label :for="q">  {{q}} </label>
-    </div></message>
+
+
+    <message>
+      <div v-for="(q, index) in question.content.options" :key="index" align="left">
+          <input type="checkbox"    :name="q">
+          <label :for="q">  {{q}} </label>
+      </div>
+    </message>
   </div>
 </template>
 
