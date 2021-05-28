@@ -1,28 +1,23 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-
-    <h1> black title </h1>
-    <ul>
-        <li v-for="(xyz, index) in list" :key="index">{{xyz}}</li>
-    </ul>
-    <hello-2 msg="Welcome to Your Vue.js App"/>
-
-    <button @click="helloWor(another)"> Click me </button>
-
-    <router-link to="/foo"> CIAo </router-link>
-    <router-link to="/foo/2"> CIAo </router-link>
+ 
+    <multiple-choice :question="exercise[1]"></multiple-choice>
+    
+    
     <router-view> </router-view>
   </div>
 </template>
 
 <script>
-import Hello2 from './components/HelloWorld.vue'
+
+import MultipleChoice from './components/MultipleChoice.vue';
 
 export default {
   name: 'App',
   components: {
-    Hello2
+   // Hello2,
+    MultipleChoice,
+  
   },
   apollo() {
 
@@ -32,17 +27,38 @@ export default {
       variablename: 'iii',
       another: 'rrr',
       list: [1,2,3,4,5,6],
+
       exercise: [
         {
           id: 1,
           difficulty: 1,
           subID:1,
           type:'HANDWRITTEN',
-          content:[
+          content:{
+            title:'question1',
+            description: 'blabla',
+            image: 'URL',
+            correctAnswer: 'ciao'
+          }
+        },
 
-          ]
+        {
+          id: 2,
+          difficulty: 2,
+          subID:1,
+          type:'GRAMMAR',
+          content:{
+            title:'Question2',
+            description: 'Question content',
+            image: 'URL2',
+            options:['aqua', 'acua', 'acqua', 'aqcua'],
+            correctAnswer: 2
+          }
         }
+
       ]
+
+
     }
   },
   computed: {
@@ -63,6 +79,7 @@ export default {
 
 <style>
 #app {
+  background-color:#e3ded1;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
