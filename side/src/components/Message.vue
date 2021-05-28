@@ -1,10 +1,12 @@
 <template>
-  <div class="message">
+  <div class="message" align="left"> 
 
-<button type="button">Read</button>
+
 <slot>  </slot>
+<button type="button">read</button>
 
     </div>
+
 </template>
 
 <script>
@@ -19,16 +21,38 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 button {
-    background: grey;
-  border: ;
+  float:right;
+  vertical-align: top;
+  display:inline-block;
+  background-color: grey;
+  border-color: grey;
+  border-radius: 6px;
   color: white;
-  padding: 15px 32px;
+  padding: 6px 15px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 160px;
+  font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+}
+slot{
+    display:inline-block;
+}
+
+.message > *{
+
+display:inline-block;
+}
+
+.message{
+  border-radius: 6px;
+  background-color: white;
+  height: 300px;
+  width: 300px;
+  border: 0px solid green;
+  padding: 50px;
+  margin: 20px;
 }
 
 h1 {
