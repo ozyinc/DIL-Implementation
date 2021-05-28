@@ -1,17 +1,15 @@
 <template>
   <div id="app">
  
-    <p>ciao</p>
     <multiple-choice :question="exercise[1]"></multiple-choice>
-    <message> </message>
-    <p>ciao</p>
-
+    
+    
     <router-view> </router-view>
   </div>
 </template>
 
 <script>
-import Message from './components/Message.vue';
+
 import MultipleChoice from './components/MultipleChoice.vue';
 
 export default {
@@ -19,7 +17,7 @@ export default {
   components: {
    // Hello2,
     MultipleChoice,
-    Message
+  
   },
   apollo() {
 
