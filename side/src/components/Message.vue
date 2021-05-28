@@ -1,9 +1,9 @@
 <template>
   <div class="message" align="left"> 
-
-
+  <button type="button">read</button>
+  <h2>{{title}}</h2>
+  <h3>{{description}}</h3>
 <slot>  </slot>
-<button type="button">read</button>
 
     </div>
 
@@ -13,7 +13,9 @@
 
 export default {
   props: {
-    question: Object
+    question: Object,
+    title: String,
+    description: String
   }
 }
 </script>
@@ -21,7 +23,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 button {
-  float:right;
+  float: right;
   vertical-align: top;
   display:inline-block;
   background-color: grey;
@@ -35,14 +37,6 @@ button {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-}
-slot{
-    display:inline-block;
-}
-
-.message > *{
-
-display:inline-block;
 }
 
 .message{

@@ -2,6 +2,7 @@
   <div id="app">
  
     <multiple-choice :question="exercise[1]"></multiple-choice>
+    <handwriting :question="exercise[0]"></handwriting>
     
     
     <router-view> </router-view>
@@ -11,14 +12,16 @@
 <script>
 
 import MultipleChoice from './components/MultipleChoice.vue';
+import Handwriting from './components/Handwriting.vue';
 
 export default {
   name: 'App',
   components: {
-   // Hello2,
     MultipleChoice,
+    Handwriting,
   
   },
+  
   apollo() {
 
   },
@@ -67,6 +70,7 @@ export default {
     }
   },
   methods: {
+    
     helloWor: function(hghg) {
       console.log(hghg)
       console.log(this.variablename)      
