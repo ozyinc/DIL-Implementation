@@ -17,10 +17,13 @@ Your browser does not support the HTML5 canvas tag.
 </template>
 
 <script>
-
+import Message from './Message'
 
 export default {
   name: 'MultipleChoice',
+  components: {
+    Message
+  },
   props: {
     question: Object
   },
