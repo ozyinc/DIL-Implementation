@@ -1,9 +1,7 @@
-import MultipleChoice from './components/MultipleChoice'
-import Component1 from './components/Component1'
+import QuestionPage from './pages/QuestionPage'
 import VueRouter from 'vue-router'
 const routes = [
-    {path:'/foo', component:Component1},
-    {path:'/foo/:id', component:MultipleChoice, props:true}
+    {path:'/questions/:index', component: QuestionPage}
 ]
 
 const router = new VueRouter({

@@ -6,20 +6,28 @@
 
 
 
-<message>
-     <div v-for="(q, index) in question.content.options" :key="index" align="left">
-        <input type="checkbox"    :name="q">
-        <label :for="q">  {{q}} </label>
-    </div></message>
+    <message>
+      <div v-for="(q, index) in question.content.options" :key="index" align="left">
+          <input type="checkbox"    :name="q">
+          <label :for="q">  {{q}} </label>
+      </div>
+    </message>
   </div>
 </template>
 
 <script>
-import Message from './Message.vue'
+import Message from './Message'
+
 export default {
-  components: { Message },
+  name: 'MultipleChoice',
+  components: {
+    Message
+  },
   props: {
     question: Object
+  },
+  mounted() {
+    console.log("this is the question:" , this.question.content)
   }
 }
 </script>

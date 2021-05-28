@@ -54,7 +54,7 @@ h3{
 
 
 button {
-  float:right;
+  float: right;
   vertical-align: top;
   display:inline-block;
   background-color: transparent;
