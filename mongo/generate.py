@@ -5,6 +5,7 @@ from typing import List, Optional, Union
 from enum import Enum
 from os import getenv
 from dotenv import load_dotenv
+
 load_dotenv()
 
 skill_count = int(getenv("SKILL_COUNT", "200"))
@@ -12,14 +13,28 @@ subject_count = int(getenv("SUBJECT_COUNT", "50"))
 lecture_count = int(getenv("LECTURE_COUNT", "30"))
 event_count = int(getenv("EVENT_COUNT", "20"))
 student_count = int(getenv("STUDENT_COUNT", "5"))
+exercise_count = int(getenv("EXERCISE_COUNT", "1500"))
+
+from pymongo import MongoClient
+
+username = getenv("MONGO_USER", "root")
+passwd = getenv("MONGO_PASS", "example")
+db_name = getenv("MONGO_DB", "test")
+host = getenv("MONGO_HOST", "0.0.0.0")
+client = MongoClient(f"mongodb://{username}:{passwd}@{host}:27017/")
+client.drop_database(db_name)
+db = client.get_database(db_name)
 
 Faker.seed(1)
-student_faker = Faker(OrderedDict([
-    # ("ar-AA", 5), # Writes in Arabic :D
-    ("it-IT", 2),
+faker = Faker("it_IT")
 
-]))
-it_faker = Faker("it_IT")
+
+def save_and_ret_generator(collection_name: str, data: List[dict]):
+    db.drop_collection(collection_name)
+    coll = db.get_collection(collection_name)
+    result = coll.insert_many(data)
+    ids = result.inserted_ids
+    return lambda: faker.random_element(elements=ids)
 
 
 def f(x):
@@ -30,23 +45,18 @@ def v(x):
     return field(default=x)
 
 
-random_id = lambda: it_faker.random_int(min=0, max=4000000)
-url = lambda extension: it_faker.lexify(f"{BASE_URL}{'?' * 16}.{extension}")
+random_id = lambda: faker.random_int(min=0, max=4000000)
+url = lambda extension: faker.lexify(f"{BASE_URL}{'?' * 16}.{extension}")
 image_url = lambda: url("jpg")
 audio_url = lambda: url("mp4")
 
 
 def lst(factory_, min=0, max=20):
-    return lambda: [factory_() for _ in range(it_faker.random_int(min=min, max=max))]
+    return lambda: [factory_() for _ in range(faker.random_int(min=min, max=max))]
 
 
-@dataclass
-class Skill:
-    name: str = f(lambda: it_faker.text(max_nb_chars=20))
-    id: int = f(random_id)
-
-
-all_skills = [Skill() for _ in range(skill_count)]
+Skill = int
+all_skills = [random_id() for _ in range(skill_count)]
 
 from datetime import datetime, date
 
@@ -57,20 +67,16 @@ def date_to_datetime(date: date):
 
 @dataclass
 class PersonalInfo:
-    cf: str = f(it_faker.ssn)
-    name: str = f(student_faker.name)
-    gender: str = f(lambda: it_faker.random_element(elements=('Male', 'Female', 'Other')))
+    cf: str = f(faker.ssn)
+    name: str = f(faker.name)
+    gender: str = f(lambda: faker.random_element(elements=('Male', 'Female', 'Other')))
     birthday: Optional[datetime] = f(
-        lambda: date_to_datetime(it_faker.date_of_birth(minimum_age=18, maximum_age=70)))
+        lambda: date_to_datetime(faker.date_of_birth(minimum_age=18, maximum_age=70)))
 
 
-@dataclass
-class Subject:
-    name: str = f(it_faker.word)
-    id: int = f(random_id)
+Subject = int
 
-
-all_subjects = [Subject() for _ in range(subject_count)]
+all_subjects = [random_id() for _ in range(subject_count)]
 
 #### EXERCISES
 
@@ -85,14 +91,14 @@ LISTENING = "listening"
 
 @dataclass
 class BaseExercise:
-    question: str = f(lambda: it_faker.sentence())
+    question: str = f(faker.sentence)
 
 
 @dataclass
 class MultipleChoiceExercise(BaseExercise):
     exType: str = v(MULTIPLE_CHOICE)
-    options: List[str] = f(lst(it_faker.sentence, 4, 6))
-    correctIndex: int = f(lambda: it_faker.random_int(min=0, max=4))
+    options: List[str] = f(lst(faker.sentence, 4, 6))
+    correctIndex: int = f(lambda: faker.random_int(min=0, max=4))
 
 
 BASE_URL = "https://cdn.sideducation.it/"
@@ -108,20 +114,20 @@ class ImageQuestionExercise(MultipleChoiceExercise):
 class ImageChoiceExercise(BaseExercise):
     exType: str = v(IMAGE_CHOICE)
     optionUrls: List[str] = f(lst(image_url, min=4, max=9))
-    correctIndex: int = f(lambda: it_faker.random_int(min=0, max=4))
+    correctIndex: int = f(lambda: faker.random_int(min=0, max=4))
 
 
 @dataclass
 class HandWritingExercise(BaseExercise):
     exType: str = v(HANDWRITING)
-    correctAnswer: str = f(lambda: it_faker.word())
+    correctAnswer: str = f(lambda: faker.word())
     samples: List[str] = f(lst(image_url, min=2, max=4))
 
 
 @dataclass
 class SpeakingExercise(BaseExercise):
     exType: str = v(SPEAKING)
-    correctAnswer: str = f(lambda: it_faker.sentence())
+    correctAnswer: str = f(faker.sentence)
     sample: str = f(audio_url)
 
 
@@ -130,17 +136,22 @@ all_difficulties = ("Easy", "Medium", "Hard")
 
 @dataclass
 class Exercise:
-    difficulty: str = f(lambda: it_faker.random_element(elements=all_difficulties))
-    subject: Subject = f(lambda: it_faker.random_element(elements=all_subjects))
-    content: BaseExercise = f(lambda: it_faker.random_element(elements=(
+    difficulty: str = f(lambda: faker.random_element(elements=all_difficulties))
+    subject: Subject = f(lambda: faker.random_element(elements=all_subjects))
+    content: BaseExercise = f(lambda: faker.random_element(elements=(
         MultipleChoiceExercise, ImageQuestionExercise, ImageChoiceExercise, HandWritingExercise, SpeakingExercise))())
+
+
+all_exercises = [asdict(Exercise()) for _ in range(exercise_count)]
+
+random_exercise = save_and_ret_generator("exercise", all_exercises)
 
 
 @dataclass
 class Solves:
-    exercise: Exercise = f(Exercise)
-    score: int = f(lambda: it_faker.random_int(0, 100))
-    feedback: List[str] = f(lambda: it_faker.sentences(nb=3))
+    exercise: Exercise = f(random_exercise)
+    score: int = f(lambda: faker.random_int(0, 100))
+    feedback: List[str] = f(lambda: faker.sentences(nb=3))
 
 
 class EvaluationType(Enum):
@@ -150,9 +161,9 @@ class EvaluationType(Enum):
 
 @dataclass
 class Evaluation:
-    type_: EvaluationType = f(lambda: it_faker.random_element(elements=(elem.value for elem in EvaluationType)))
+    type_: EvaluationType = f(lambda: faker.random_element(elements=(elem.value for elem in EvaluationType)))
     solved: List[Solves] = f(lst(Solves))
-    todo: List[Exercise] = f(lst(Exercise))
+    todo: List[Exercise] = f(lst(random_exercise))
 
 
 # Evaluations and study plan assignment tests are same they exist on student
@@ -162,19 +173,19 @@ class Evaluation:
 
 @dataclass
 class ExternalPerson:
-    name: str = f(it_faker.name)
-    company: str = f(it_faker.company)
-    email: str = f(it_faker.email)
-    about: str = f(it_faker.paragraph)
-    job: str = f(it_faker.job)
-    skills: List[Skill] = f(lambda: it_faker.random_elements(elements=all_skills, length=5))
+    name: str = f(faker.name)
+    company: str = f(faker.company)
+    email: str = f(faker.email)
+    about: str = f(faker.paragraph)
+    job: str = f(faker.job)
+    skills: List[Skill] = f(lambda: faker.random_elements(elements=all_skills, length=5))
 
 
 @dataclass
 class ExternalCompany:
-    name: str = f(it_faker.company)
-    slogan: str = f(it_faker.catch_phrase)
-    description: str = f(it_faker.paragraph)
+    name: str = f(faker.company)
+    slogan: str = f(faker.catch_phrase)
+    description: str = f(faker.paragraph)
 
 
 def get_first_of_week(date_: date):
@@ -184,14 +195,14 @@ def get_first_of_week(date_: date):
 @dataclass
 class SlottedTiming:
     week: datetime = f(
-        lambda: date_to_datetime(get_first_of_week(it_faker.date_between(start_date="today", end_date="+1y"))))
-    slot: int = f(lambda: it_faker.random_int(0, 75))
+        lambda: date_to_datetime(get_first_of_week(faker.date_between(start_date="today", end_date="+1y"))))
+    slot: int = f(lambda: faker.random_int(0, 75))
 
 
 @dataclass
 class CustomIntervalTiming:
-    start: datetime = f(lambda: it_faker.date_time_this_year(False, True))
-    end: datetime = f(lambda: it_faker.date_time_this_year(False, True))
+    start: datetime = f(lambda: faker.date_time_this_year(False, True))
+    end: datetime = f(lambda: faker.date_time_this_year(False, True))
 
 
 Timing = Union[SlottedTiming, CustomIntervalTiming]
@@ -200,13 +211,13 @@ ExternalAttendee = Union[ExternalPerson, ExternalCompany]
 
 @dataclass
 class SkillItem:
-    skill: Skill = f(lambda: it_faker.random_element(elements=all_skills))
-    level: int = f(lambda: it_faker.random_int(min=1, max=5))
+    skill: Skill = f(lambda: faker.random_element(elements=all_skills))
+    level: int = f(lambda: faker.random_int(min=1, max=5))
 
 
 @dataclass
 class PassedSubject:
-    subject: Subject = f(lambda: it_faker.random_element(elements=all_subjects))
+    subject: Subject = f(lambda: faker.random_element(elements=all_subjects))
 
 
 @dataclass
@@ -219,14 +230,14 @@ all_lectures = [random_id() for _ in range(lecture_count)]
 
 @dataclass
 class AttendsLecture:
-    lecture_id: int = f(it_faker.random_element(elements=all_lectures))
+    lecture_id: int = f(lambda: faker.random_element(elements=all_lectures))
 
 
 @dataclass
 class SolvedExercisesOf:
-    of_subject: Subject = f(lambda: it_faker.random_element(elements=all_subjects))
-    difficulty: str = f(lambda: it_faker.random_element(elements=all_difficulties))
-    amount: int = f(lambda: it_faker.random_int(min=1, max=20))
+    of_subject: Subject = f(lambda: faker.random_element(elements=all_subjects))
+    difficulty: str = f(lambda: faker.random_element(elements=all_difficulties))
+    amount: int = f(lambda: faker.random_int(min=1, max=20))
 
 
 all_join_conditions = [PassedSubject, HasSkillLevel, AttendsLecture, SolvedExercisesOf]
@@ -235,26 +246,42 @@ JoinCondition = Union[PassedSubject, HasSkillLevel, AttendsLecture, SolvedExerci
 
 @dataclass
 class Event:
-    content: str = f(it_faker.paragraphs)
+    content: str = f(faker.paragraphs)
     external_attendees: List[ExternalAttendee] = f(
-        lst(it_faker.random_element(elements=[ExternalCompany, ExternalPerson]), 0, 3))
-    timing: List[Timing] = f(lst(it_faker.random_element(elements=[SlottedTiming, CustomIntervalTiming]), 1, 4))
+        lst(faker.random_element(elements=[ExternalCompany, ExternalPerson]), 0, 3))
+    timing: List[Timing] = f(lst(faker.random_element(elements=[SlottedTiming, CustomIntervalTiming]), 1, 4))
     location_id: int = f(random_id)
-    supporting_subject: List[Subject] = f(lst(lambda: it_faker.random_element(elements=all_subjects), 1, 4))
-    join_conditions: List[JoinCondition] = f(lst(it_faker.random_element(elements=all_join_conditions), 0, 5))
+    supporting_subject: List[Subject] = f(lst(lambda: faker.random_element(elements=all_subjects), 1, 4))
+    join_conditions: List[JoinCondition] = f(lst(faker.random_element(elements=all_join_conditions), 0, 5))
 
 
-all_events = [Event() for _ in range(event_count)]
+all_events = [asdict(Event()) for _ in range(event_count)]
+
+random_event = save_and_ret_generator("events", all_events)
 
 
 @dataclass
 class EventAttendance:
-    event: Event = f(lambda: it_faker.random_element(elements=all_events))
-    feedback: str = f(it_faker.paragraph)
-    rating: int = f(lambda: it_faker.random_int(0, 5))
+    event: Event = f(random_event)
+    feedback: str = f(faker.paragraph)
+    rating: int = f(lambda: faker.random_int(0, 5))
 
 
 #### Study Plan
+@dataclass
+class CourseAttendance:
+    lecture_id: int = f(lambda: faker.random_element(elements=all_lectures))
+    attended_course: List[bool] = f(lst(faker.pybool, 10, 15))
+    homework_exercises: List[Exercise] = f(lst(random_exercise))
+
+
+@dataclass
+class StudyPlan:
+    courses: List[CourseAttendance] = f(lst(CourseAttendance, 0, 10))
+    busy_times: List[Timing] = f(lst(faker.random_element(elements=[SlottedTiming, CustomIntervalTiming]), 1, 4))
+    complete: bool = f(faker.pybool)
+    suggested_events: List[Event] = f(lst(random_event, 0, 10))
+    suggested_exercises: List[Exercise] = f(lst(random_exercise, 0, 15))
 
 
 @dataclass
@@ -266,20 +293,8 @@ class Student:
     tutorial_status: str = v("done")
     exercise_attempts: List[Solves] = f(lst(Solves))
     events: List[Event] = f(lst(EventAttendance, 0, 20))
-    study_plan: str = f(it_faker.text)
+    study_plan: str = f(StudyPlan)
 
 
 students = [asdict(Student()) for _ in range(student_count)]
-
-from pymongo import MongoClient
-
-username = getenv("MONGO_USER", "root")
-passwd = getenv("MONGO_PASS", "example")
-db_name = getenv("MONGO_DB", "test")
-coll_name = getenv("MONGO_COLL", "test")
-host = getenv("MONGO_HOST", "0.0.0.0")
-client = MongoClient(f"mongodb://{username}:{passwd}@{host}:27017/")
-db = client.get_database(db_name)
-db.drop_collection(coll_name)
-coll = db.get_collection(coll_name)
-coll.insert_many(students)
+save_and_ret_generator("students", students)
