@@ -20,12 +20,12 @@ export default {
 .dashboard {
     display: grid;
     grid-template-columns: 1fr 5fr;
-    background-color: teal;
+    background-color: white;
     height: 100vh;
     width: 100vw;
 }
 .content {
-    background-color: white;
+    background-color: #e9f3fa;
     border-radius: 10px;
     margin: 6px 6px 6px 0px;
 }

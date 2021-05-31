@@ -4,19 +4,19 @@
           Sidebar
       </div>
       <div class="menu-items"> 
-          <router-link to ="/questions/0" active-class="active" tag="button" class="side-btn">
+          <router-link to ="/questions/0" active-class="active" exact tag="button" class="side-btn">
            <div class="link-container">
-               Quetstion 1
+               Question number 1
            </div>
           </router-link>   
-          <router-link to ="/questions/1" active-class="active" tag="button" class="side-btn">
+          <router-link to ="/questions/1" active-class="active" exact tag="button" class="side-btn">
            <div class="link-container">
-               Question 2
+               Question number 2
            </div>
           </router-link> 
-          <router-link to ="/" active-class="active" tag="button" class="side-btn">
+          <router-link to ="/" active-class="active" exact tag="button" class="side-btn">
            <div class="link-container">
-               Question 3
+               Question number 3
            </div>
           </router-link>  
       </div>
@@ -51,15 +51,17 @@ export default {
 }
 
 .side-btn.active{
-    background-color: white;
-    color: teal;
+    background-color: rgb(55, 55, 146);;
+    color: white;
     font-weight: 500;
 }
 .side-btn{
+    font-size: 25px;
     border: none;
     padding: 20px 0px;
     cursor: pointer;
-    color: white;
+    color:rgb(55, 55, 146);
+    background-color: transparent;
 }
 
 </style>
