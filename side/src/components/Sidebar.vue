@@ -1,8 +1,8 @@
 <template>
   <div class="sidebar">
-      <div class="title">
+      <!-- <div class="title">
           Sidebar
-      </div>
+      </div> -->
       <div class="menu-items"> 
           <router-link to ="/questions/0" active-class="active" exact tag="button" class="side-btn">
            <div class="link-container">
@@ -47,12 +47,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .title{
     color:white;
-    font-size: 24px;
+    font-size: 16px;
     margin-top: 10px;
-    
 }
 
 .menu-items{
@@ -78,20 +77,22 @@ export default {
 .side-btn{
     width:100%;
     margin: 0;
-    font-size: 25px;
+    font-size: 16px;
     border: none;
-    padding: 20px 0px;
+    /* padding: 20px 0px; */
+    padding: 20px;
     cursor: pointer;
     color:rgb(55, 55, 146);
     background-color: transparent;
 }
 
 .link-container{
-    display: flex;
+    /* display: flex; */
+    width: 200px;
 }
 
 .text{
-    margin-left: 2vh;
+    /* margin-left: 2vh; */
 }
 
 .arrow{

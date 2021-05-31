@@ -3,6 +3,7 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import router from './routes.js'
 
+import './style.css'
 
 
 
