@@ -7,6 +7,7 @@
  
 <script>
 import db from '../firestore'
+import bus from  '../bus'
 import Handwriting from '../components/Handwriting'
 import MultipleChoice from '../components/MultipleChoice'
 
@@ -61,9 +62,9 @@ export default {
   created() {
     this.getQuestions();
   },
-
-  name: 'home',
-
+  mounted() {
+    bus.$emit('update-title', 'Level Assessment Test') 
+  },
   components: {
     Handwriting,
     MultipleChoice, 

@@ -1,7 +1,7 @@
 <template>
 
   <div id="app">
-    <!-- <app-header></app-header> -->
+    <app-header></app-header>
     <router-view> </router-view>
   </div>
 
@@ -10,8 +10,13 @@
 
 <script>
 
+import AppHeader from "./components/AppHeader"
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    AppHeader
+  }
 }
 </script>
 
@@ -22,11 +27,15 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #4c4c4c;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 body{
-  margin:0 px;
-  padding:0 px;
+  margin:0;
+  padding:0;
+  margin-top: 50px;
   box-sizing: border-box;
   background-color:#e9f3fa;
 }
