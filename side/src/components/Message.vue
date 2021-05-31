@@ -84,7 +84,7 @@ button:active {
   border-radius: 6px;
   background-color: white;
   height: 250px;
-  width: 500px;
+  width: 550px;
   border: 0px solid green;
   padding: 50px;
   margin: 20px;

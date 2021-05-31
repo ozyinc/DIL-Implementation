@@ -19,14 +19,16 @@ export default {
 <style>
 .dashboard {
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 1.5fr 5fr;
     background-color: white;
     height: 100vh;
-    width: 100vw;
+    width: 80vw;
+   
 }
 .content {
+  
+    padding-left: 120px;
     background-color: #e9f3fa;
-    border-radius: 10px;
-    margin: 6px 6px 6px 0px;
+    
 }
 </style>
