@@ -11,13 +11,13 @@ const routes = [
       component: QuestionPage,
       children:[
         {
-        path:'questions/0',
-        component:() => import('./components/Handwriting')
+          path:'questions/0',
+          component:() => import('./components/Handwriting')
         },
 
         {
-        path:'questions/1',
-        component:() => import('./components/MultipleChoice')
+          path:'questions/1',
+          component:() => import('./components/MultipleChoice')
         }
       ]
      
