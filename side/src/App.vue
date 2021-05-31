@@ -27,4 +27,10 @@ export default {
   margin-top: 30px;
   height: 900px;
 }
+
+body{
+  margin:0 px;
+  padding:0 px;
+  box-sizing: border-box;
+}
 </style>

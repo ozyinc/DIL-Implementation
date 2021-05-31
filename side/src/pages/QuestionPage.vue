@@ -1,26 +1,21 @@
 <template>
-
-
-
-
   <div class="question-page" v-if="question">
 
     <Sidebar/>
     <div class="content">
-      Content
+    
+     <router-view/>
     </div>
     
-    <component :is="question.type" v-bind="{ question }"></component>
+  
   </div>
-
-
 </template>
-
+ 
 <script>
 import db from '../firestore'
-import Handwriting from '../components/Handwriting'
-import MultipleChoice from '../components/MultipleChoice'
-import Sidebar from '../components/Sidebar.vue'
+//import Handwriting from '../components/Handwriting'
+//import MultipleChoice from '../components/MultipleChoice'
+import Sidebar from '../components/Sidebar'
 
 export default {
   data() {
@@ -73,12 +68,17 @@ export default {
   created() {
     this.getQuestions();
   },
+
+  name: 'home',
+
   components: {
-    Handwriting,
-    MultipleChoice,
+  //  Handwriting,
+   // MultipleChoice, 
     Sidebar
   }
 }
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -97,5 +97,19 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.question-page{
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  background-color: teal;
+  height: 100vh;
+  width: 100vh;
+}
+
+.content{
+  background-color: white;
+  border-radius: 20px;
+  margin: 6px 6px 6px 0px;
 }
 </style>
