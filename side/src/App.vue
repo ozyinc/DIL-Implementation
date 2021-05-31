@@ -1,8 +1,12 @@
 <template>
+
+
   <div id="app">
     <router-link to="/questions/0">QuestionsPage</router-link>
     <router-view> </router-view>
   </div>
+
+
 </template>
 
 <script>
@@ -14,12 +18,13 @@ export default {
 
 <style>
 #app {
-  background-color:#e3ded1;
+  background-color:#e9f3fa;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 30px;
+  height: 900px;
 }
 </style>
