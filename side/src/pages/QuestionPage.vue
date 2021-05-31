@@ -1,21 +1,14 @@
+  
 <template>
   <div class="question-page" v-if="question">
-
-    <Sidebar/>
-    <div class="content">
-    
-     <router-view/>
-    </div>
-    
-  
+    <component :is="question.type" v-bind="{ question }"></component>
   </div>
 </template>
  
 <script>
 import db from '../firestore'
-//import Handwriting from '../components/Handwriting'
-//import MultipleChoice from '../components/MultipleChoice'
-import Sidebar from '../components/Sidebar'
+import Handwriting from '../components/Handwriting'
+import MultipleChoice from '../components/MultipleChoice'
 
 export default {
   data() {
@@ -72,9 +65,9 @@ export default {
   name: 'home',
 
   components: {
-  //  Handwriting,
-   // MultipleChoice, 
-    Sidebar
+    Handwriting,
+    MultipleChoice, 
+    
   }
 }
 
@@ -99,17 +92,5 @@ a {
   color: #42b983;
 }
 
-.question-page{
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  background-color: teal;
-  height: 100vh;
-  width: 100vh;
-}
 
-.content{
-  background-color: white;
-  border-radius: 20px;
-  margin: 6px 6px 6px 0px;
-}
 </style>
