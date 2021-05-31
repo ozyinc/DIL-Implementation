@@ -1,13 +1,26 @@
 <template>
+
+
+
+
   <div class="question-page" v-if="question">
+
+    <Sidebar/>
+    <div class="content">
+      Content
+    </div>
+    
     <component :is="question.type" v-bind="{ question }"></component>
   </div>
+
+
 </template>
 
 <script>
 import db from '../firestore'
 import Handwriting from '../components/Handwriting'
 import MultipleChoice from '../components/MultipleChoice'
+import Sidebar from '../components/Sidebar.vue'
 
 export default {
   data() {
@@ -17,6 +30,7 @@ export default {
       componentParam: {},
       questions: []
     }; 
+     
   },
   computed: {
     question() {
@@ -61,7 +75,8 @@ export default {
   },
   components: {
     Handwriting,
-    MultipleChoice
+    MultipleChoice,
+    Sidebar
   }
 }
 </script>
