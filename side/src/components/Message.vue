@@ -83,8 +83,9 @@ button:active {
 .message{
   border-radius: 6px;
   background-color: white;
-  height: 250px;
-  width: 500px;
+  /* height: 250px;
+  width: 550px; */
+  width: 100%;
   border: 0px solid green;
   padding: 50px;
   margin: 20px;

@@ -1,11 +1,13 @@
+  
 <template>
   <div class="question-page" v-if="question">
     <component :is="question.type" v-bind="{ question }"></component>
   </div>
 </template>
-
+ 
 <script>
 import db from '../firestore'
+import bus from  '../bus'
 import Handwriting from '../components/Handwriting'
 import MultipleChoice from '../components/MultipleChoice'
 
@@ -17,6 +19,7 @@ export default {
       componentParam: {},
       questions: []
     }; 
+     
   },
   computed: {
     question() {
@@ -59,11 +62,17 @@ export default {
   created() {
     this.getQuestions();
   },
+  mounted() {
+    bus.$emit('update-title', 'Level Assessment Test') 
+  },
   components: {
     Handwriting,
-    MultipleChoice
+    MultipleChoice, 
+    
   }
 }
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -83,4 +92,6 @@ li {
 a {
   color: #42b983;
 }
+
+
 </style>
