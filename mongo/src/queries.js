@@ -220,7 +220,210 @@ const collidingBusyTimesWithEvents = [{
         colliding_student_count: -1
     }
 }]
-// count of people matching requirements for an event (no busy collisions, prerequisites match) (can be used during event creation
+// count of people matching requirements for an event (prerequisites match) (can be used during event creation)
+
+const countStudents = function (students, join_conditions) {
+    if (!join_conditions) {
+        return students;
+    }
+    return join_conditions.map(function (join_condition) {
+        if (join_condition.of_subject) {
+            return students.filter(function (student) {
+                var result_exercise = student.exercises.find(function (exercise) {
+                    return exercise.difficulty == join_condition.difficulty && exercise.subject == join_condition.subject;
+                });
+                return result_exercise ? result_exercise.count > 0 : false;
+            });
+        }
+        if (join_condition.skill) {
+            var skill = join_condition.skill.skill, level = join_condition.skill.level;
+            return students.filter(function (student) {
+                var result_skill = student.skill_set.find(function (skill_) {
+                    return skill_.skill == skill;
+                });
+                return result_skill ? result_skill.level >= level : false;
+            });
+        }
+        if (join_condition.subject) {
+            return students.filter(function (student) {
+                return !!student.passed_subjects.find(function (subject) {
+                    return subject == join_condition.subject
+                });
+            });
+        }
+        if (join_condition.lecture_id) {
+            return students.filter(function (student) {
+                return !!student.courses_attended.find(function (attended) {
+                    return attended == join_condition.lecture_id
+                });
+            });
+        }
+        return [];
+    }).reduce(function (acc, arr) {
+        return acc.concat(arr);
+    }, []);
+}
+
+const studentsMatchingPrerequisites = [{
+    $project: {
+        join_conditions: 1,
+    }
+}, {
+    $lookup: {
+        from: 'students',
+        pipeline: [{
+            $project: {
+                account_id: 1,
+                skill_set: 1,
+                exercises_done: {
+                    $concatArrays: [{
+                        $reduce: {
+                            input: "$evaluations.solved.exercise",
+                            initialValue: [],
+                            in: {$concatArrays: ["$$value", "$$this"]}
+                        }
+                    }, "$exercise_attempts.exercise"]
+                },
+                courses_attended: "$study_plan.courses.lecture_id",
+                all_subject_attempts: "$evaluations"
+            }
+        }, {
+            $set: {
+                all_subject_attempts: {
+                    $filter: {
+                        input: "$all_subject_attempts",
+                        as: "attempt",
+                        cond: {
+                            $and: [{$eq: ["$$attempt.status", "pass"]}, {$eq: ["$$attempt.type_", "subjectEvaluation"]}]
+                        }
+                    },
+                }
+            }
+        }, {
+            $set: {
+                all_subject_attempts: {
+                    $map: {
+                        input: "$all_subject_attempts",
+                        as: "attempt",
+                        in: {$arrayElemAt: ["$$attempt.solved", 0]}
+                    }
+                }
+            }
+        }, {
+            $lookup: {
+                from: 'exercises',
+                localField: 'all_subject_attempts.exercise',
+                foreignField: '_id',
+                as: 'passed_exercises'
+            }
+        }, {
+            $project: {
+                all_subject_attempts: 0,
+                passed_exercises: {
+                    _id: 0,
+                    difficulty: 0,
+                    content: 0
+                }
+            }
+        }, {
+            $set: {
+                passed_subjects: {$map: {input: "$passed_exercises", as: "exercise", in: "$$exercise.subject"}}
+            }
+        }, {
+            $unset:
+                "passed_exercises"
+        }, {
+            $lookup: {
+                from: 'exercises',
+                localField: 'exercises_done',
+                foreignField: '_id',
+                as: 'exercises'
+            }
+        }, {
+            $project: {
+                exercises_done: 0,
+                exercises: {
+                    _id: 0,
+                    content: 0
+                }
+            }
+        }, {
+            $unwind: {
+                path: "$exercises"
+            }
+        }, {
+            $group: {
+                _id: {
+                    _id: "$_id",
+                    difficulty: "$exercises.difficulty",
+                    subject: "$exercises.subject"
+                },
+                count: {
+                    $sum: 1
+                },
+                rest: {$push: "$$ROOT"}
+            }
+        }, {
+            $set: {
+                rest: {$arrayElemAt: ["$rest", 0]}
+            }
+        }, {
+            $set: {
+                rest: {exercises: {count: "$count"}}
+            }
+        }, {
+            $replaceRoot: {
+                newRoot: "$rest"
+            }
+        }, {
+            $group: {
+                _id: "$_id",
+                exercises: {
+
+                    $push: "$exercises"
+                },
+                rest: {$push: "$$ROOT"},
+            }
+        }, {
+            $set: {
+                rest: {$arrayElemAt: ["$rest", 0]}
+            }
+        }, {
+            $set: {
+                rest: {exercises: "$exercises"}
+            }
+        }, {
+            $replaceRoot: {
+                newRoot: "$rest"
+            }
+        }],
+        as: 'student'
+    }
+}, {
+    $match: {}
+}, {
+    $set: {
+        passing_students: {
+            $function: {
+                args: ["$student", "$join_conditions"],
+                lang: "js",
+                body: "function (students, join_conditions) {if (!join_conditions) {return students;}return join_conditions.map(function (join_condition) {if (join_condition.of_subject) {return students.filter(function (student) {var result_exercise = student.exercises.find(function (exercise) {return exercise.difficulty == join_condition.difficulty && exercise.subject == join_condition.subject;});return result_exercise ? result_exercise.count > 0 : false;});}if (join_condition.skill) {var skill = join_condition.skill.skill, level = join_condition.skill.level;return students.filter(function (student) {var result_skill = student.skill_set.find(function (skill_) {return skill_.skill == skill;});return result_skill ? result_skill.level >= level : false;});}if (join_condition.subject) {return students.filter(function (student) {return !!student.passed_subjects.find(function(subject) {return subject == join_condition.subject});});}if (join_condition.lecture_id) {return students.filter(function (student) {return !!student.courses_attended.find(function(attended) {return attended == join_condition.lecture_id});});}return [];}).reduce(function(acc, arr) {return acc.concat(arr);}, []);}"
+            }
+        }
+    }
+}, {
+    $set: {
+        count: {$size: "$passing_students"}
+    }
+}, {
+    $project: {
+        count: 1,
+    }
+}, {
+    $sort: {
+        count: -1
+    }
+}];
 
 // suggested events not already attended
 
@@ -252,10 +455,161 @@ const suggestedEventsThatAreAlreadyAttended = [{
     $match: {
         already_attended_count: {$gt: 0}
     }
+}, {
+    $sort: {
+        already_solved_count: -1
+    }
 }];
 // suggested exercises not already solved
+const suggestedExercisesAlreadyAttempted = [{
+    $project: {
+        account_id: 1,
+        study_plan: {
+            suggested_exercises: 1
+        },
+        test: {
+            $concatArrays: [{
+                $reduce: {
+                    input: "$evaluations.solved.exercise",
+                    initialValue: [],
+                    in: {$concatArrays: ["$$value", "$$this"]}
+                }
+            }, {
+                $reduce: {
+                    input: "$evaluations.todo.exercise",
+                    initialValue: [],
+                    in: {$concatArrays: ["$$value", "$$this"]}
+                }
+            }, "$exercise_attempts.exercise"]
+        }
+    }
+}, {
+    $set: {
+        already_solved_count: {
+            $size: {
+                $filter: {
+                    input: '$test',
+                    as: 'item',
+                    cond: {
+                        $in: [
+                            '$$item',
+                            '$study_plan.suggested_exercises'
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}, {
+    $project: {
+        account_id: 1,
+        _id: 0,
+        already_solved_count: 1
+    }
+}, {
+    $match: {
+        already_solved_count: {
+            $gt: 0
+        }
+    }
+}, {
+    $sort: {
+        already_solved_count: -1
+    }
+}];
+
 
 // A student is not presented same exercise more than once. Return the subjects so that we can generate more exercises for that subject
+
+const exercisesPresentedMoreThanOnce = [{
+    $project: {
+        test: {
+            $concatArrays: [
+                {
+                    $reduce: {
+                        input: '$evaluations.solved.exercise',
+                        initialValue: [],
+                        'in': {
+                            $concatArrays: [
+                                '$$value',
+                                '$$this'
+                            ]
+                        }
+                    }
+                },
+                {
+                    $reduce: {
+                        input: '$evaluations.todo',
+                        initialValue: [],
+                        'in': {
+                            $concatArrays: [
+                                '$$value',
+                                '$$this'
+                            ]
+                        }
+                    }
+                },
+                '$exercise_attempts.exercise'
+            ]
+        }
+    }
+}, {
+    $unwind: {
+        path: "$test"
+    }
+}, {
+    $group: {
+        _id: {
+            _id: "$_id",
+            test: "$test",
+        },
+        count: {
+            $sum: 1
+        }
+    }
+}, {
+    $sort: {
+        count: -1
+    }
+}, {
+    $project: {
+        _id: "$_id._id",
+        test: "$_id.test",
+        count: {$subtract: ["$count", 1]}
+    }
+}, {
+    $match: {
+        count: {$gt: 0}
+    }
+}, {
+    $group: {
+        _id: "$test",
+        count: {
+            $sum: "$count"
+        }
+    }
+}, {
+    $lookup: {
+        from: 'exercises',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'exercise'
+    }
+}, {
+    $unwind: {
+        path: "$exercise"
+    }
+}, {
+    $project: {
+        count: 1,
+        difficulty: "$exercise.difficulty",
+        subject: "$exercise.subject"
+    }
+}, {
+    $sort: {
+        count: -1
+    }
+}];
 
 // Suggested events don't collide with busy times.
 

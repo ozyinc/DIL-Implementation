@@ -97,6 +97,8 @@ def generate(db: Database):
 
     @dataclass
     class Evaluation:
+        status: str = f(
+            lambda: faker.random_element(elements=OrderedDict([("pass", 0.4), ("fail", 0.5), ("ongoing", 0.1)])))
         type_: EvaluationType = f(lambda: faker.random_element(elements=(elem.value for elem in EvaluationType)))
         solved: List[Solves] = f(lst(Solves))
         todo: List[Exercise] = f(lst(random_exercise))
