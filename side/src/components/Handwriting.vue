@@ -1,25 +1,9 @@
 <template>
   <div class="handwriting">
-<<<<<<< HEAD
     <message :title="question.content.title" :description="question.content.description"></message>
-    <message>      
+    <message>
       <canvas id="myCanvas" width="260" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
       <button id="submitButton" type="button" v-on:click="submit">Submit</button>
-=======
-    <message
-      :title="question.content.title"
-      :description="question.content.description"
-    ></message>
-    <message>
-      <canvas
-        id="myCanvas"
-        width="260"
-        height="260"
-        @mousemove="draw"
-        @mousedown="beginDrawing"
-        @mouseup="stopDrawing"
-      ></canvas>
->>>>>>> 6d56648b26d2e598dd641843901c0acf0b08207a
     </message>
   </div>
 </template>
@@ -64,8 +48,8 @@ export default {
       this.y = e.offsetY;
       this.isDrawing = true;
     },
-  
-    
+
+
     async    stopDrawing(e) {
       if (this.isDrawing) {
         this.drawLine(this.x, this.y, e.offsetX, e.offsetY);
@@ -73,18 +57,17 @@ export default {
         this.y = 0;
         this.isDrawing = false;
       }
-<<<<<<< HEAD
     },
 
      submit: async function (){
       console.log("submitted");
-    
+
 
 
       var can = document.getElementsByTagName("canvas");
       var dataURLstring = can[0].toDataURL().split(",")[1];
-      
-     
+
+
 
    var Bbody= {
      imageb64:
@@ -111,7 +94,7 @@ export default {
 
 
 
-    
+
 
       // check for error response
      if (!response.ok) {
@@ -122,8 +105,8 @@ export default {
       }
 
       this.totalVuePackages = data.total;
-      
-   
+
+
     /*
     .catch(error => {
       this.errorMessage = error;
@@ -132,29 +115,6 @@ export default {
 
      console.log("Good");
     }
-=======
-      fetch(
-        "https://us-central1-chrome-sensor-291917.cloudfunctions.net/evaluateWriting"
-      )
-        .then(async (response) => {
-          console.log(response.text);
-          const data = await response.json();
-
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to response statusText
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-          }
-
-          this.totalVuePackages = data.total;
-        })
-        .catch((error) => {
-          this.errorMessage = error;
-          console.error("There was an error!", error);
-        });
-    },
->>>>>>> 6d56648b26d2e598dd641843901c0acf0b08207a
   },
   mounted() {
     var c = document.getElementById("myCanvas");
