@@ -69,7 +69,7 @@ export default {
 }
 
 .side-btn.active{
-    background-color: rgb(55, 55, 146);;
+    background-color: rgb(55, 55, 146);
     color: white;
     font-weight: 500;
 }

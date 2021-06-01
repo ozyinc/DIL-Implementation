@@ -3,6 +3,7 @@
     <message :title="question.content.title" :description="question.content.description"></message>
     <message>      
       <canvas id="myCanvas" width="260" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
+      <button id="submitButton" type="button" v-on:click="submit">Submit</button>
     </message>
   </div>
 </template>
@@ -22,6 +23,9 @@ export default {
     }  
   },
   methods: {
+
+
+
     drawLine(x1, y1, x2, y2) {
       let ctx = this.canvas;
       ctx.beginPath();
@@ -44,31 +48,72 @@ export default {
       this.y = e.offsetY;
       this.isDrawing = true;
     },
-    stopDrawing(e) {
+  
+    
+    async    stopDrawing(e) {
       if (this.isDrawing) {
         this.drawLine(this.x, this.y, e.offsetX, e.offsetY);
         this.x = 0;
         this.y = 0;
         this.isDrawing = false;
       }
-      fetch("https://us-central1-chrome-sensor-291917.cloudfunctions.net/evaluateWriting")
-    .then(async response => {
+    },
+
+     submit: async function (){
+      console.log("submitted");
+    
+
+
+      var can = document.getElementsByTagName("canvas");
+      var dataURLstring = can[0].toDataURL().split(",")[1];
+      
+     
+
+   var Bbody= {
+     imageb64:
+     dataURLstring
+   }
+
+      // POST request using fetch with async/await
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": 'application/json' },
+        body:JSON.stringify(Bbody)
+      };
+
+      const response = await fetch("https://us-central1-chrome-sensor-291917.cloudfunctions.net/evaluateWriting", requestOptions)
+      //.then(async response => {
+     // const data = await response.json();
+     // this.postId = data.id;
+
+      console.log("Response text:");
       console.log(response.text);
       const data = await response.json();
+      console.log(data);
+
+
+
+
+    
 
       // check for error response
-      if (!response.ok) {
-        // get error message from body or default to response statusText
+     if (!response.ok) {
+       console.log("male");
+        //get error message from body or default to response statusText
         const error = (data && data.message) || response.statusText;
         return Promise.reject(error);
       }
 
       this.totalVuePackages = data.total;
-    })
+      
+   
+    /*
     .catch(error => {
       this.errorMessage = error;
       console.error("There was an error!", error);
-    });
+    });*/
+
+     console.log("Good");
     }
   },
   mounted(){
@@ -98,5 +143,11 @@ li {
 }
 a {
   color: #42b983;
+}
+
+#submitButton{
+  margin-top: 200px;
+  font-size: 30px;
+  color: rgb(55, 55, 146);
 }
 </style>
