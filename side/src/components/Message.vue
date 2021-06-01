@@ -1,62 +1,51 @@
 <template>
-  <div class="message" align="left"> 
+  <div class="message" align="left">
+    <button type="button"><img src="../assets/Speaker.svg" /></button>
+    <h2>{{ title }}</h2>
+    <h3>{{ description }}</h3>
 
+    <!-- CONDITIONAL RENDERING -->
+    <h1 v-if="image">
+      <canvas
+        id="myCanvas"
+        width="240"
+        height="80"
+        style="border:1px solid #d3d3d3;"
+      >
+        Your browser does not support the HTML5 canvas tag.
+      </canvas>
+    </h1>
 
-
-
-<button type="button"><img src="../assets/Speaker.svg"></button>
-<h2>{{title}}</h2>
-<h3>{{description}}</h3>
-
-
-<!-- CONDITIONAL RENDERING -->
-<h1 v-if=image>    <canvas id="myCanvas" width="240" height="80"
-style="border:1px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.
-</canvas>
-</h1>
-
-
-
-
-<slot>  </slot>
-
-
-    </div>
-
+    <slot> </slot>
+  </div>
 </template>
 
 <script>
-
 export default {
   props: {
     question: Object,
     title: String,
     description: String,
-    image: String
-  }
-}
+    image: String,
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
 h2 {
   font-weight: bold;
-  color:rgb(55, 55, 146);
+  color: rgb(55, 55, 146);
 }
 
-h3{
-
-  color:rgb(55, 55, 146);
+h3 {
+  color: rgb(55, 55, 146);
 }
-
 
 button {
   float: right;
   vertical-align: top;
-  display:inline-block;
+  display: inline-block;
   background-color: transparent;
   border-color: transparent;
   border-radius: 6px;
@@ -68,19 +57,20 @@ button {
   font-size: 16px;
   margin: -20px 2px;
   cursor: pointer;
-
 }
 
-button:hover {background-color: rgb(226, 224, 224)}
+button:hover {
+  background-color: rgb(226, 224, 224);
+}
 
 button:active {
   background-color: rgb(218, 218, 218);
   box-shadow: 0 5px #666;
   transform: translateY(4px);
-  transition: all 0.1s
+  transition: all 0.1s;
 }
 
-.message{
+.message {
   border-radius: 6px;
   background-color: white;
   /* height: 250px;
@@ -93,7 +83,7 @@ button:active {
 
 h1 {
   margin: 40px 0 0;
-  color: red
+  color: red;
 }
 ul {
   list-style-type: none;

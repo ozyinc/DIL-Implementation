@@ -1,26 +1,42 @@
 <template>
   <div class="handwriting">
+<<<<<<< HEAD
     <message :title="question.content.title" :description="question.content.description"></message>
     <message>      
       <canvas id="myCanvas" width="260" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
       <button id="submitButton" type="button" v-on:click="submit">Submit</button>
+=======
+    <message
+      :title="question.content.title"
+      :description="question.content.description"
+    ></message>
+    <message>
+      <canvas
+        id="myCanvas"
+        width="260"
+        height="260"
+        @mousemove="draw"
+        @mousedown="beginDrawing"
+        @mouseup="stopDrawing"
+      ></canvas>
+>>>>>>> 6d56648b26d2e598dd641843901c0acf0b08207a
     </message>
   </div>
 </template>
 
 <script>
-import Message from './Message.vue'
+import Message from "./Message.vue";
 export default {
   components: { Message },
   props: {
-    question: Object
+    question: Object,
   },
-  data(){
-    return{
-        canvas: null,
-        x: 0,
-        y: 0,
-    }  
+  data() {
+    return {
+      canvas: null,
+      x: 0,
+      y: 0,
+    };
   },
   methods: {
 
@@ -29,7 +45,7 @@ export default {
     drawLine(x1, y1, x2, y2) {
       let ctx = this.canvas;
       ctx.beginPath();
-      ctx.strokeStyle = 'black';
+      ctx.strokeStyle = "black";
       ctx.lineWidth = 1;
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
@@ -37,7 +53,7 @@ export default {
       ctx.closePath();
     },
     draw(e) {
-      if(this.isDrawing) {
+      if (this.isDrawing) {
         this.drawLine(this.x, this.y, e.offsetX, e.offsetY);
         this.x = e.offsetX;
         this.y = e.offsetY;
@@ -57,6 +73,7 @@ export default {
         this.y = 0;
         this.isDrawing = false;
       }
+<<<<<<< HEAD
     },
 
      submit: async function (){
@@ -115,13 +132,35 @@ export default {
 
      console.log("Good");
     }
+=======
+      fetch(
+        "https://us-central1-chrome-sensor-291917.cloudfunctions.net/evaluateWriting"
+      )
+        .then(async (response) => {
+          console.log(response.text);
+          const data = await response.json();
+
+          // check for error response
+          if (!response.ok) {
+            // get error message from body or default to response statusText
+            const error = (data && data.message) || response.statusText;
+            return Promise.reject(error);
+          }
+
+          this.totalVuePackages = data.total;
+        })
+        .catch((error) => {
+          this.errorMessage = error;
+          console.error("There was an error!", error);
+        });
+    },
+>>>>>>> 6d56648b26d2e598dd641843901c0acf0b08207a
   },
-  mounted(){
+  mounted() {
     var c = document.getElementById("myCanvas");
-    this.canvas = c.getContext('2d');
+    this.canvas = c.getContext("2d");
   },
-  
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -131,7 +170,7 @@ export default {
 }
 h1 {
   margin: 40px 0 0;
-  color: red
+  color: red;
 }
 ul {
   list-style-type: none;

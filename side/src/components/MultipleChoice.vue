@@ -1,42 +1,47 @@
 <template>
   <div class="multiple-choice">
-    <message :title="question.content.title" :description="question.content.description" :image="question.content.image">
+    <message
+      :title="question.content.title"
+      :description="question.content.description"
+      :image="question.content.image"
+    >
     </message>
 
-
-
-
     <message>
-      <div v-for="(q, index) in question.content.options" :key="index" align="left">
-          <input type="checkbox"    :name="q">
-          <label :for="q">  {{q}} </label>
+      <div
+        v-for="(q, index) in question.content.options"
+        :key="index"
+        align="left"
+      >
+        <input type="checkbox" :name="q" />
+        <label :for="q"> {{ q }} </label>
       </div>
     </message>
   </div>
 </template>
 
 <script>
-import Message from './Message'
+import Message from "./Message";
 
 export default {
-  name: 'MultipleChoice',
+  name: "MultipleChoice",
   components: {
-    Message
+    Message,
   },
   props: {
-    question: Object
+    question: Object,
   },
   mounted() {
-    console.log("this is the question:" , this.question.content)
-  }
-}
+    console.log("this is the question:", this.question.content);
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
   margin: 40px 0 0;
-  color: red
+  color: red;
 }
 ul {
   list-style-type: none;
