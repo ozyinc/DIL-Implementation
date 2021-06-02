@@ -50,8 +50,7 @@ export default {
     methods:{
 submit:  function (){
     //HERE CODE FOR SUBMITTING THE ANSWERS AND SHOW RESULTS
-    console.log("ciao")
-}
+    }
 }
 }
 
@@ -82,7 +81,7 @@ submit:  function (){
 }
 
 .side-btn.active{
-    background-color: rgb(55, 55, 146);
+    background-color: rgb(64, 67, 125); /* rgb(55, 55, 146);*/
     color: white;
     font-weight: 500;
 }

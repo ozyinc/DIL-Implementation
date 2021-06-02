@@ -3,7 +3,11 @@
     <message :title="question.content.title" :description="question.content.description"></message>
     <message>
       <canvas id="myCanvas" width="460" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
-      <button id="submitButton" type="button" v-on:click="confirm">Confirm</button>
+        <div id="buttons">
+          <button id="trashButton" type="button" v-on:click="trashCanvas"><img src="../assets/Trash.svg" /></button>
+          <button id="confirmButton" type="button" v-on:click="confirm">Confirm</button>
+        </div>
+      
     </message>
   </div>
 </template>
@@ -24,7 +28,12 @@ export default {
   },
   methods: {
 
-
+  //retrieve  the canvas element and clear it for redrawing.
+   trashCanvas: function(){
+    var can = document.getElementsByTagName("canvas");
+    const context = can[0].getContext('2d');
+    context.clearRect(0, 0, can[0].width, can[0].height);
+    },
 
     drawLine(x1, y1, x2, y2) {
       let ctx = this.canvas;
@@ -120,6 +129,8 @@ export default {
     var c = document.getElementById("myCanvas");
     this.canvas = c.getContext("2d");
   },
+
+ 
 };
 </script>
 
@@ -144,9 +155,17 @@ a {
   color: #42b983;
 }
 
-#submitButton{
-  margin-top: 200px;
+#confirmButton{
+
+  margin-top: -60px;
   font-size: 30px;
   color: rgb(55, 55, 146);
 }
+
+#trashButton{
+  margin-top: -70px;
+  margin-right: 500px;
+}
+
+
 </style>
