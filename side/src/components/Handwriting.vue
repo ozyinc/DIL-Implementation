@@ -2,8 +2,8 @@
   <div class="handwriting">
     <message :title="question.content.title" :description="question.content.description"></message>
     <message>
-      <canvas id="myCanvas" width="260" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
-      <button id="submitButton" type="button" v-on:click="submit">Submit</button>
+      <canvas id="myCanvas" width="460" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
+      <button id="submitButton" type="button" v-on:click="confirm">Confirm</button>
     </message>
   </div>
 </template>
@@ -59,7 +59,7 @@ export default {
       }
     },
 
-     submit: async function (){
+     confirm: async function (){
       console.log("submitted");
 
 

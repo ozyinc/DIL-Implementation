@@ -29,7 +29,7 @@
           <router-link to ="/" active-class="active" exact tag="button" class="side-btn">
          <div class="link-container">
                <div class="text">
-               Question number 3  
+               Back  
                </div>
 
                 <div class="arrow">
@@ -37,6 +37,8 @@
                 </div>
             </div>
           </router-link>  
+
+           <button id="submitButton" type="button" v-on:click="submit">Submit</button>
       </div>
   </div>
 </template>
@@ -44,7 +46,18 @@
 <script>
 
 export default {
+
+    methods:{
+submit:  function (){
+    //HERE CODE FOR SUBMITTING THE ANSWERS AND SHOW RESULTS
+    console.log("ciao")
 }
+}
+}
+
+
+
+
 </script>
 
 <style scoped>
@@ -92,11 +105,30 @@ export default {
 }
 
 .text{
+    display: flex;
     /* margin-left: 2vh; */
 }
 
 .arrow{
     margin-left: 10vh;
+}
+
+#submitButton{
+  margin-top: 500px;
+  font-size: 30px;
+  color: white;
+   cursor: pointer;
+}
+
+#submitButton:hover {
+  background-color: rgb(55, 55, 146);
+}
+
+#submitButton:active {
+  background-color: rgb(37, 37, 121);
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+  transition: all 0.1s;
 }
 
 </style>
