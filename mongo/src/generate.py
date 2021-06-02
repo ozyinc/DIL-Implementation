@@ -14,6 +14,7 @@ def generate(db: Database):
     event_count = int(getenv("EVENT_COUNT", "20"))
     student_count = int(getenv("STUDENT_COUNT", "5"))
     exercise_count = int(getenv("EXERCISE_COUNT", "1500"))
+    location_count = int(getenv("LOCATION_COUNT", "3"))
 
     Skill = int
     all_skills = [random_id() for _ in range(skill_count)]
@@ -127,8 +128,8 @@ def generate(db: Database):
     class SlottedTiming:
         week: datetime = f(
             lambda: date_to_datetime(get_first_of_week(faker.date_between(start_date="today", end_date="+1y"))))
-        slot: int = f(lambda: faker.random_int(0, 75))
-        # 7 days, 12 hours each start at 08:00, end at 20:30, 12 slots per day, each 1h
+        slot: int = f(lambda: faker.random_int(0, 7 * 12))
+        # 7 days, 12 hours each start at 08:00, end at 21:00, 12 slots per day, each 1h
 
     @dataclass
     class CustomIntervalTiming:
@@ -173,6 +174,9 @@ def generate(db: Database):
     all_join_conditions = [PassedSubject, HasSkillLevel, AttendsLecture, SolvedExercisesOf]
     JoinCondition = Union[PassedSubject, HasSkillLevel, AttendsLecture, SolvedExercisesOf]
 
+
+    all_locations = [random_id() for _ in range(location_count)]
+
     @dataclass
     class Event:
         content: str = f(faker.paragraphs)
@@ -180,7 +184,7 @@ def generate(db: Database):
             lst(lambda: faker.random_element(elements=[ExternalCompany, ExternalPerson]), 0, 3))
         timing: List[Timing] = f(
             lst(lambda: faker.random_element(elements=[SlottedTiming, CustomIntervalTiming]), 1, 4))
-        location_id: int = f(random_id)
+        location_id: int = f(lambda: faker.random_element(elements=all_locations))
         supporting_subject: List[Subject] = f(lst(lambda: faker.random_element(elements=all_subjects), 1, 4))
         join_conditions: List[JoinCondition] = f(lst(lambda: faker.random_element(elements=all_join_conditions), 0, 5))
 

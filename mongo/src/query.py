@@ -780,3 +780,480 @@ def student_count_eligible_for_events(db: Database):
             }
         }
     ])
+
+
+def event_suggestions_collide_with_busy_hours(db: Database):
+    db.get_collection("students").aggregate([
+        {
+            '$set': {
+                'study_plan': {
+                    '_id': '$_id'
+                }
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': '$study_plan'
+            }
+        }, {
+            '$project': {
+                'busy_times': 1,
+                'suggested_events': 1
+            }
+        }, {
+            '$unwind': {
+                'path': '$busy_times'
+            }
+        }, {
+            '$set': {
+                'busy_times': {
+                    'start': {
+                        '$ifNull': [
+                            '$busy_times.start', {
+                                '$add': [
+                                    '$busy_times.week', {
+                                        '$multiply': [
+                                            {
+                                                '$floor': {
+                                                    '$divide': [
+                                                        '$busy_times.slot', 12
+                                                    ]
+                                                }
+                                            }, 24, 60, 60, 1000
+                                        ]
+                                    }, {
+                                        '$multiply': [
+                                            8, 60, 60, 1000
+                                        ]
+                                    }, {
+                                        '$multiply': [
+                                            {
+                                                '$floor': {
+                                                    '$mod': [
+                                                        '$busy_times.slot', 12
+                                                    ]
+                                                }
+                                            }, 60, 60, 1000
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    'end': {
+                        '$ifNull': [
+                            '$busy_times.end', {
+                                '$add': [
+                                    '$busy_times.week', {
+                                        '$multiply': [
+                                            {
+                                                '$floor': {
+                                                    '$divide': [
+                                                        '$busy_times.slot', 12
+                                                    ]
+                                                }
+                                            }, 24, 60, 60, 1000
+                                        ]
+                                    }, {
+                                        '$multiply': [
+                                            9, 60, 60, 1000
+                                        ]
+                                    }, {
+                                        '$multiply': [
+                                            {
+                                                '$floor': {
+                                                    '$mod': [
+                                                        '$busy_times.slot', 12
+                                                    ]
+                                                }
+                                            }, 60, 60, 1000
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }, {
+            '$project': {
+                'busy_times': {
+                    'week': 0,
+                    'slot': 0
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$_id',
+                'busy_times': {
+                    '$push': '$busy_times'
+                },
+                'suggested_events': {
+                    '$first': '$suggested_events'
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'events',
+                'pipeline': [
+                    {
+                        '$project': {
+                            'timing': 1,
+                            '_id': 1
+                        }
+                    }, {
+                        '$unwind': {
+                            'path': '$timing'
+                        }
+                    }, {
+                        '$set': {
+                            'start': {
+                                '$ifNull': [
+                                    '$timing.start', {
+                                        '$add': [
+                                            '$timing.week', {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$divide': [
+                                                                '$timing.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 24, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    8, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$mod': [
+                                                                '$timing.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 60, 60, 1000
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            'end': {
+                                '$ifNull': [
+                                    '$timing.end', {
+                                        '$add': [
+                                            '$timing.week', {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$divide': [
+                                                                '$timing.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 24, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    9, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$mod': [
+                                                                '$timing.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 60, 60, 1000
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }, {
+                        '$unset': 'timing'
+                    }, {
+                        '$group': {
+                            '_id': '$_id',
+                            'timings': {
+                                '$push': {
+                                    'start': '$start',
+                                    'end': '$end'
+                                }
+                            }
+                        }
+                    }
+                ],
+                'as': 'events'
+            }
+        }, {
+            '$set': {
+                'events': {
+                    '$filter': {
+                        'input': '$events',
+                        'as': 'event',
+                        'cond': {
+                            '$in': [
+                                '$$event._id', '$suggested_events'
+                            ]
+                        }
+                    }
+                }
+            }
+        }, {
+            '$unset': 'suggested_events'
+        }, {
+            '$unwind': {
+                'path': '$events'
+            }
+        }, {
+            '$set': {
+                'colliding_count': {
+                    '$size': {
+                        '$filter': {
+                            'input': '$busy_times',
+                            'as': 'busy_time',
+                            'cond': {
+                                '$size': {
+                                    '$filter': {
+                                        'input': '$events.timings',
+                                        'as': 'event_timing',
+                                        'cond': {
+                                            '$not': {
+                                                '$or': [
+                                                    {
+                                                        '$gt': [
+                                                            '$$event_timing.start', '$$busy_time.end'
+                                                        ]
+                                                    }, {
+                                                        '$lt': [
+                                                            '$$event_timing.end', '$$busy_time.start'
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                'event_id': '$events._id'
+            }
+        }, {
+            '$match': {
+                'colliding_count': {
+                    '$gt': 0
+                }
+            }
+        }, {
+            '$project': {
+                'events': 0,
+                'busy_times': 0,
+                'colliding_count': 0
+            }
+        }, {
+            '$group': {
+                '_id': '$_id',
+                'event_ids': {
+                    '$push': '$event_id'
+                }
+            }
+        }
+    ])
+
+
+def get_colliding_event_ids_per_location(db: Database):
+    db.get_collection("events").aggregate([
+        {
+            '$project': {
+                'location_id': 1,
+                'timing': 1
+            }
+        }, {
+            '$set': {
+                'timing': {
+                    '$map': {
+                        'input': '$timing',
+                        'as': 'time',
+                        'in': {
+                            'start': {
+                                '$ifNull': [
+                                    '$$time.start', {
+                                        '$add': [
+                                            '$$time.week', {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$divide': [
+                                                                '$$time.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 24, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    8, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$mod': [
+                                                                '$$time.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 60, 60, 1000
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            'end': {
+                                '$ifNull': [
+                                    '$$time.end', {
+                                        '$add': [
+                                            '$$time.week', {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$divide': [
+                                                                '$$time.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 24, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    9, 60, 60, 1000
+                                                ]
+                                            }, {
+                                                '$multiply': [
+                                                    {
+                                                        '$floor': {
+                                                            '$mod': [
+                                                                '$$time.slot', 12
+                                                            ]
+                                                        }
+                                                    }, 60, 60, 1000
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }, {
+            '$unwind': {
+                'path': '$timing'
+            }
+        }, {
+            '$group': {
+                '_id': '$location_id',
+                'times': {
+                    '$push': {
+                        'event_id': '$_id',
+                        'start': '$timing.start',
+                        'end': '$timing.end'
+                    }
+                }
+            }
+        }, {
+            '$set': {
+                'collusions': {
+                    '$reduce': {
+                        'initialValue': [],
+                        'in': {
+                            '$concatArrays': [
+                                '$$value', '$$this'
+                            ]
+                        },
+                        'input': {
+                            '$map': {
+                                'input': '$times',
+                                'as': 'time1',
+                                'in': {
+                                    '$map': {
+                                        'input': {
+                                            '$filter': {
+                                                'input': '$times',
+                                                'as': 'other',
+                                                'cond': {
+                                                    '$gt': [
+                                                        '$$other.start', '$$time1.start'
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        'as': 'time2',
+                                        'in': {
+                                            't1': '$$time1',
+                                            't2': '$$time2',
+                                            'collides': {
+                                                '$not': {
+                                                    '$or': [
+                                                        {
+                                                            '$gt': [
+                                                                '$$time1.start', '$$time2.end'
+                                                            ]
+                                                        }, {
+                                                            '$lt': [
+                                                                '$$time1.end', '$$time2.start'
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }, {
+            '$set': {
+                'collusions': {
+                    '$filter': {
+                        'input': '$collusions',
+                        'as': 'collusion',
+                        'cond': '$$collusion.collides'
+                    }
+                }
+            }
+        }, {
+            '$project': {
+                'times': 0
+            }
+        }, {
+            '$unwind': {
+                'path': '$collusions'
+            }
+        }, {
+            '$group': {
+                '_id': '$_id',
+                'event_pairs': {
+                    '$push': {
+                        'fst': '$collusions.t1.event_id',
+                        'snd': '$collusions.t2.event_id'
+                    }
+                },
+                'collusion_count': {
+                    '$sum': 1
+                }
+            }
+        }, {
+            '$sort': {
+                'collusion_count': -1
+            }
+        }
+    ])
