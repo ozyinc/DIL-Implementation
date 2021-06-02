@@ -148,7 +148,7 @@ def already_attended_events_suggested(db: Database):
 
 
 def events_collide_count_with_student_busy_times(db: Database):
-    db.get_collection("student").aggregate([
+    return db.get_collection("student").aggregate([
         {
             '$replaceRoot': {
                 'newRoot': '$study_plan'
@@ -473,7 +473,7 @@ def already_solved_exercises_suggested(db: Database):
 # Count is 2 if a student is presented the exercise 3 times or 2 students are presented this exercise 2 times
 
 def exercises_presented_more_than_once(db: Database):
-    db.get_collection("students").aggregate([
+    return db.get_collection("students").aggregate([
         {
             '$project': {
                 'test': {
@@ -570,7 +570,7 @@ def exercises_presented_more_than_once(db: Database):
 
 # Count students that can join each event
 def student_count_eligible_for_events(db: Database):
-    db.get_collection("events").aggregate([
+    return db.get_collection("events").aggregate([
         {
             '$project': {
                 'join_conditions': 1
@@ -779,11 +779,11 @@ def student_count_eligible_for_events(db: Database):
                 'count': -1
             }
         }
-    ])
+    ], allowDiskUse=True)
 
 
 def event_suggestions_collide_with_busy_hours(db: Database):
-    db.get_collection("students").aggregate([
+    return db.get_collection("students").aggregate([
         {
             '$set': {
                 'study_plan': {
@@ -1068,7 +1068,7 @@ def event_suggestions_collide_with_busy_hours(db: Database):
 
 
 def get_colliding_event_ids_per_location(db: Database):
-    db.get_collection("events").aggregate([
+    return db.get_collection("events").aggregate([
         {
             '$project': {
                 'location_id': 1,
