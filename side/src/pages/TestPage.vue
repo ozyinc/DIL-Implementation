@@ -3,22 +3,18 @@
     <img src="../assets/logo-side.svg" />
     <h1>Level Assessment Test</h1>
     <router-link to="/questions/0">
-      <button class="start-test">Start test!</button>
+      <button class="start-test" @click="initiateTest">Start test!</button>
     </router-link>
-
-    <!-- <Sidebar/>
-        <div class="content">
-            <router-view/>
-        </div> -->
   </div>
 </template>
 
 <script>
-// import Sidebar from "../components/Sidebar";
 export default {
-  components: {
-    // Sidebar,
-  },
+  methods: {
+    initiateTest: function() {
+      localStorage.removeItem('questions');
+    }
+  }
 };
 </script>
 

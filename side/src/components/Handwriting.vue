@@ -2,7 +2,7 @@
   <div class="handwriting">
     <message :title="question.content.title" :description="question.content.description"></message>
     <message>
-      <canvas id="myCanvas" width="460" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing"></canvas>
+      <canvas id="myCanvas" width="460" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing" ></canvas>
         <div id="buttons">
           <button id="trashButton" type="button" v-on:click="trashCanvas"><img src="../assets/Trash.svg" /></button>
           <button id="confirmButton" type="button" v-on:click="confirm">Confirm</button>
@@ -24,6 +24,7 @@ export default {
       canvas: null,
       x: 0,
       y: 0,
+      answer: ''
     };
   },
   methods: {
@@ -59,13 +60,14 @@ export default {
     },
 
 
-    async    stopDrawing(e) {
+    async stopDrawing(e) {
       if (this.isDrawing) {
         this.drawLine(this.x, this.y, e.offsetX, e.offsetY);
         this.x = 0;
         this.y = 0;
         this.isDrawing = false;
       }
+      this.answer = this.createAnswerString();
     },
 
      confirm: async function (){
@@ -79,8 +81,7 @@ export default {
 
 
    var Bbody= {
-     imageb64:
-     dataURLstring
+     imageb64: dataURLstring
    }
 
       // POST request using fetch with async/await
@@ -123,13 +124,47 @@ export default {
     });*/
 
      console.log("Good");
+    },
+
+    createAnswerString: function() {
+      var can = document.getElementsByTagName("canvas");
+      var dataURLstring = can[0].toDataURL().split(",")[1];
+      return dataURLstring;
     }
+      
   },
   mounted() {
     var c = document.getElementById("myCanvas");
     this.canvas = c.getContext("2d");
   },
+  beforeDestroy() {
 
+    console.log(this.answer)
+
+    let result = {
+        correctAnswer: this.question.content.correctAnswer,
+        questionID: this.question.id,
+        type: this.question.type,
+        answer: this.answer,
+        title: this.question.content.title,
+        description: this.question.content.description
+      }
+
+    let questions = JSON.parse(localStorage.getItem('questions'));
+
+    if(!questions || questions.length === undefined) {
+      localStorage.setItem('questions', JSON.stringify([ result ]));
+    } else {
+
+      let indexOfQuestion = (questions.map(q => q.questionID)).indexOf(this.question.id)
+      if(indexOfQuestion > -1) {
+        questions.splice(indexOfQuestion, 1);
+      }
+      questions.push(result);
+      localStorage.setItem('questions', JSON.stringify(questions));
+    }
+
+  }
  
 };
 </script>

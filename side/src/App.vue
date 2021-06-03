@@ -37,7 +37,7 @@ body{
   padding:0;
   margin-top: 50px;
   box-sizing: border-box;
-  background-color:#e9f3fa;
+  background-color:#F4F6FB;
 }
 
 

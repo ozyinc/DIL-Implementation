@@ -3,6 +3,7 @@
   <div class="question-page" v-if="question">
     <component :is="question.type" v-bind="{ question }"></component>
   </div>
+  
 </template>
  
 <script>
@@ -40,7 +41,9 @@ export default {
         console.log(exercises)
         
         this.questions = exercises;
-      })
+
+        bus.$emit('questions-loaded', this.questions);
+      });
     },
     addNewExercise: function() {
       // db.collection("exercises").add({
@@ -57,7 +60,7 @@ export default {
       //   }).then((docRef) => {
       //     console.log("Document written with ID: ", docRef.id);
       // })
-    }
+    },
   },
   created() {
     this.getQuestions();

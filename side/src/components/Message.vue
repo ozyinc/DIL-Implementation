@@ -75,7 +75,7 @@ button:active {
   background-color: white;
   /* height: 250px;
   width: 550px; */
-  width: 100%;
+  width: auto;
   border: 0px solid green;
   padding: 50px;
   margin: 20px;
