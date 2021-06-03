@@ -31,18 +31,16 @@ const analyseWriting = async function(answer, correct) {
   const [result] = await client.documentTextDetection(imageDetectionReq);
   const fullTextAnnotation = result.fullTextAnnotation;
 
-  console.log(`Full text: ${fullTextAnnotation.text}`);
+  if(fullTextAnnotation) {
+    console.log(`Full text: ${fullTextAnnotation.text}`) 
+  } else {
+    console.log(`could not detect`) 
+    return false;
+  }
+  
   let residue = fullTextAnnotation.text.trim().toLowerCase().replace(correct.toLowerCase(), '');
 
-  if(residue.length > 0) {
-    for(let c of residue) {
-      if(c >= 'a' && c<='z') {
-        return false;
-      }
-    }
-  }
-
-  return true;
+  return residue.length == 0;
 }
 
 // // Create and Deploy Your First Cloud Functions
