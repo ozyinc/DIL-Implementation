@@ -1,6 +1,6 @@
 <template>
-  <div class="message" align="left">
-    <button type="button"><img src="../assets/Speaker.svg" /></button>
+  <div class="message" align="left" ref="message">
+    <button type="button"><img src="../assets/Speaker.svg"  @click="playMessage"></button>
     <h2>{{ title }}</h2>
     <h3>{{ description }}</h3>
 
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+
+import player from '../player';
 export default {
   props: {
     question: Object,
@@ -28,6 +30,38 @@ export default {
     description: String,
     image: String,
   },
+  methods: {
+    playMessage: async function() {
+
+      const message = this.stripHtml();
+
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": 'application/json' },
+        body: JSON.stringify({ text: message })
+      };
+
+      const response = await fetch("https://us-central1-chrome-sensor-291917.cloudfunctions.net/getSpeechFromText", requestOptions)
+      //.then(async response => {
+     // const data = await response.json();
+     // this.postId = data.id;
+
+      console.log("Response text:");
+      console.log(response.text);
+      const data = await response.json();
+      console.log(data);
+
+      if(!data) {
+        console.log("error")
+      }
+
+      
+      player.playMessage(data.audioBuffer.data);
+    },
+    stripHtml: function() {
+      return this.$refs.message.textContent || this.$refs.message.textContent.innerText || "";
+    }
+  }
 };
 </script>
 

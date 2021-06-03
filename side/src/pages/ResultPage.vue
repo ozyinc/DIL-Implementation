@@ -5,7 +5,7 @@
     <div v-if="loading" class="loader">Loading...</div>
     <div v-if="!loading">
         <message>
-            <h2> You level is: <span>{{result.level}}</span></h2>
+            <h2> You level is: <div class="level">{{result.level}}</div></h2>
             <p> Check out the questions and the evaluation of your answers to see why you received this level. </p>
         </message>
         <message>
@@ -82,6 +82,19 @@ export default {
     right: 0;
 }
 
+.level {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  padding: 15px;
+  background-color: #F1A16A;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
 .loader {
   color: #40437D;
   font-size: 90px;
@@ -98,6 +111,9 @@ export default {
   -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
   animation: load6 1.7s infinite ease, round 1.7s infinite ease;
 }
+
+
+
 @-webkit-keyframes load6 {
   0% {
     box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
