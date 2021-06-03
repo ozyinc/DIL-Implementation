@@ -21,9 +21,7 @@ export default {
     display: grid;
     grid-template-columns: 1.5fr 5fr;
     background-color: white;
-    height: 100vh;
-    width: 80vw;
-   
+    height: 100%;
 }
 .content {
   

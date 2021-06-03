@@ -1,22 +1,25 @@
 <template>
-  <div class="message" align="left" ref="message">
-    <button type="button"><img src="../assets/Speaker.svg"  @click="playMessage"></button>
-    <h2>{{ title }}</h2>
-    <h3>{{ description }}</h3>
+  <div class="message-item" >
+    <div class="chat-pal"><img src="@/assets/chat-pal.svg"></div>
+    <div class="message" ref="message">
+      <button type="button"><img src="../assets/Speaker.svg"  @click="playMessage"></button>
+      <h2>{{ title }}</h2>
+      <h3>{{ description }}</h3>
 
-    <!-- CONDITIONAL RENDERING -->
-    <h1 v-if="image">
-      <canvas
-        id="myCanvas"
-        width="240"
-        height="80"
-        style="border:1px solid #d3d3d3;"
-      >
-        Your browser does not support the HTML5 canvas tag.
-      </canvas>
-    </h1>
+      <!-- CONDITIONAL RENDERING -->
+      <h1 v-if="image">
+        <canvas
+          id="myCanvas"
+          width="240"
+          height="80"
+          style="border:1px solid #d3d3d3;"
+        >
+          Your browser does not support the HTML5 canvas tag.
+        </canvas>
+      </h1>
 
-    <slot> </slot>
+      <slot> </slot>
+    </div>
   </div>
 </template>
 
@@ -67,6 +70,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.message-item {
+  display: flex;
+  align-items: flex-end;
+  margin-left: 20px;
+}
+
+.message-item > * {
+  display:inline-block;
+
+}
+
 h2 {
   font-weight: bold;
   color: rgb(55, 55, 146);
@@ -107,12 +121,9 @@ button:active {
 .message {
   border-radius: 6px;
   background-color: white;
-  /* height: 250px;
-  width: 550px; */
-  width: auto;
-  border: 0px solid green;
-  padding: 50px;
-  margin: 20px;
+  width: 100%;
+  padding: 30px;
+  margin: 10px;
 }
 
 h1 {

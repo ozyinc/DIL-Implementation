@@ -57,6 +57,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.result-page {
+  text-align: center;
+}
+
 #submitButton {
   font-size: 30px;
   color: white;

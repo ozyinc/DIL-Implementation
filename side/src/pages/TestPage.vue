@@ -1,5 +1,6 @@
 <template>
   <div class="test-page">
+    <br><br>
     <img src="../assets/logo-side.svg" />
     <h1>Level Assessment Test</h1>
     <router-link to="/questions/0">
