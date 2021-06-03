@@ -4,6 +4,10 @@ const vision = require('@google-cloud/vision');
 
 const cors = require('cors')({origin: true});
 
+const textToSpeech = require('@google-cloud/text-to-speech');
+const ttsclient = new textToSpeech.TextToSpeechClient()
+
+
 const analyseMultipleChoice = function(answer, correct) {
   return correct == answer;
 }
@@ -152,8 +156,35 @@ exports.submitLevelAssessment = functions.runWith({
 
     results.level = Math.floor( (countCorrect/results.results.length) * 5 + 1 )
 
+    results.level = Math.min(results.level, 5);
+
     response.json(results)
       
   });
   
+});
+
+exports.getSpeechFromText = functions.https.onRequest((request, response) => {
+  return cors(request, response, async () => {
+
+
+
+    var text = request.body.text;
+
+    const options = {
+        input: {text: text},
+        // Select the language and SSML voice gender (optional)
+        voice: {languageCode: 'en-US', ssmlGender: 'MALE'},
+        // select the type of audio encoding
+        audioConfig: { audioEncoding: 'LINEAR16', pitch: '5.0' },
+    };
+
+    const audio = await ttsclient.synthesizeSpeech(options);
+
+    response.json({
+            text: text,
+            audioBuffer: audio[0].audioContent
+        });
+
+  });
 });
