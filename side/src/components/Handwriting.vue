@@ -5,7 +5,7 @@
       <canvas id="myCanvas" width="460" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing" ></canvas>
         <div id="buttons">
           <button id="trashButton" type="button" v-on:click="trashCanvas"><img src="../assets/Trash.svg" /></button>
-          <button id="confirmButton" type="button" v-on:click="confirm">Confirm</button>
+          <!--<button id="confirmButton" type="button" v-on:click="confirm">Confirm</button>-->
         </div>
       
     </message>
@@ -199,7 +199,7 @@ a {
 
 #trashButton{
   margin-top: -70px;
-  margin-right: 500px;
+  margin-right: 400px;
 }
 
 
