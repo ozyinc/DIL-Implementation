@@ -8,12 +8,13 @@
 </template>
 
 <script>
-import Sidebar from '../components/Sidebar'
+import Sidebar from '../components/Sidebar';
+
 export default {
-    components: {
-        Sidebar
-    }
-}
+  components: {
+    Sidebar,
+  },
+};
 </script>
 
 <style>
@@ -24,8 +25,8 @@ export default {
     height: 100%;
 }
 .content {
-  
+
     background-color: #F4F6FB;
-    
+
 }
 </style>

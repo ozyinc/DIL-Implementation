@@ -15,7 +15,7 @@
           </div>
         </div>
       </router-link>
-    
+
       <router-link
         to="/final"
         active-class="active"
@@ -50,18 +50,19 @@
 
 <script>
 
-import bus from '../bus'
+import bus from '../bus';
+
 export default {
   data() {
     return {
-        questions: []
-    }
+      questions: [],
+    };
   },
   beforeMount() {
-        bus.$on('questions-loaded', (questions) => {
-            this.questions = questions;
-        });
-  }
+    bus.$on('questions-loaded', (questions) => {
+      this.questions = questions;
+    });
+  },
 };
 </script>
 

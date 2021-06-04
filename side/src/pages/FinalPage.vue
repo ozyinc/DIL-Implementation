@@ -1,4 +1,3 @@
-
 <template>
   <div class="result-page">
     <h2> Click here to submit your test: </h2>
@@ -11,44 +10,41 @@
 </template>
 
 <script>
-import bus from  '../bus'
+import bus from '../bus';
 
 export default {
   methods: {
-      submit: async function () {
-      //HERE CODE FOR SUBMITTING THE ANSWERS AND SHOW RESULTS
+    async submit() {
+      // HERE CODE FOR SUBMITTING THE ANSWERS AND SHOW RESULTS
 
-        let questions = JSON.parse(localStorage.getItem('questions'));
+      const questions = JSON.parse(localStorage.getItem('questions'));
 
-        // POST request using fetch with async/await
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": 'application/json' },
-            body: JSON.stringify(questions)
-        };
+      // POST request using fetch with async/await
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(questions),
+      };
 
-        const response = await fetch("https://us-central1-chrome-sensor-291917.cloudfunctions.net/submitLevelAssessment", requestOptions)
+      const response = await fetch('https://us-central1-chrome-sensor-291917.cloudfunctions.net/submitLevelAssessment', requestOptions);
 
-        // check for error response
-        if (!response.ok) {
-            //get error message from body or default to response statusText
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
+      // check for error response
+      if (!response.ok) {
+        // get error message from body or default to response statusText
+        const error = (data && data.message) || response.statusText;
+        return Promise.reject(error);
+      }
 
-        const data = await response.json();
+      const data = await response.json();
 
-        bus.$emit('results-arrived', data);
-
-
+      bus.$emit('results-arrived', data);
     },
   },
   mounted() {
-    bus.$emit('update-title', 'Level Assessment Test')
+    bus.$emit('update-title', 'Level Assessment Test');
   },
 
-}
-
+};
 
 </script>
 

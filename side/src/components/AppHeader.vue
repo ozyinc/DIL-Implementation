@@ -5,16 +5,17 @@
 </template>
 
 <script>
-import bus from '../bus'
+import bus from '../bus';
+
 export default {
   data() {
     return {
-      pageTitle: "Side Education",
+      pageTitle: 'Side Education',
     };
   },
   mounted() {
     bus.$on('update-title', (newTitle) => {
-        this.pageTitle = newTitle;
+      this.pageTitle = newTitle;
     });
   },
 };

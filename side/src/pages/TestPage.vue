@@ -12,10 +12,10 @@
 <script>
 export default {
   methods: {
-    initiateTest: function() {
+    initiateTest() {
       localStorage.removeItem('questions');
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -19,12 +19,12 @@
             <h4>Your answer:</h4>
 
               <div v-html="parseAnswer(question.answer)" class="answer" ></div>
-            
+
           </div>
         </div>
         <div class="correct-answer">
           <h4>Correct answers</h4>
-             
+
           <div class="answer" > {{question.correctAnswer}} </div>
 
         </div>
@@ -37,21 +37,21 @@
 export default {
   data() {
     return {
-      expand: false
-    }
+      expand: false,
+    };
   },
   props: {
     question: Object,
   },
   methods: {
-    toggleExpand: function() {
+    toggleExpand() {
       this.expand = !this.expand;
     },
     parseAnswer(answer) {
-      switch(this.question.type) {
+      switch (this.question.type) {
         case 'MultipleChoice':
           return `<p>${answer}</p>`;
-        case 'Handwriting': 
+        case 'Handwriting':
           return `<img src="data:image/png;base64,${answer}">`;
         default:
           return 'No Answer';
@@ -62,7 +62,7 @@ export default {
 
   },
   mounted() {
-  }
+  },
 };
 </script>
 

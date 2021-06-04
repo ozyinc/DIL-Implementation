@@ -6,7 +6,6 @@
       <h2>{{ title }}</h2>
       <h3>{{ description }}</h3>
 
-      <!-- CONDITIONAL RENDERING -->
       <h1 v-if="image">
         <canvas
           id="myCanvas"
@@ -26,6 +25,7 @@
 <script>
 
 import player from '../player';
+
 export default {
   props: {
     question: Object,
@@ -34,30 +34,27 @@ export default {
     image: String,
   },
   methods: {
-    playMessage: async function() {
-
+    async playMessage() {
       const message = this.stripHtml();
 
       const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": 'application/json' },
-        body: JSON.stringify({ text: message })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: message }),
       };
 
-      const response = await fetch("https://us-central1-chrome-sensor-291917.cloudfunctions.net/getSpeechFromText", requestOptions)
+      const response = await fetch('https://us-central1-chrome-sensor-291917.cloudfunctions.net/getSpeechFromText', requestOptions);
 
       const data = await response.json();
 
-      if(data) {
+      if (data) {
         player.playMessage(data.audioBuffer.data);
       }
-
-      
     },
-    stripHtml: function() {
-      return this.$refs.message.textContent || this.$refs.message.textContent.innerText || "";
-    }
-  }
+    stripHtml() {
+      return this.$refs.message.textContent || this.$refs.message.textContent.innerText || '';
+    },
+  },
 };
 </script>
 

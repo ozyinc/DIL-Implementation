@@ -5,19 +5,18 @@
     <router-view> </router-view>
   </div>
 
-
 </template>
 
 <script>
 
-import AppHeader from "./components/AppHeader"
+import AppHeader from './components/AppHeader';
 
 export default {
   name: 'App',
   components: {
-    AppHeader
-  }
-}
+    AppHeader,
+  },
+};
 </script>
 
 <style>
@@ -38,6 +37,5 @@ body{
   box-sizing: border-box;
   background-color:#F4F6FB;
 }
-
 
 </style>

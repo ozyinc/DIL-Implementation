@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import Message from "./Message";
+import Message from './Message';
 
 export default {
-  name: "MultipleChoice",
+  name: 'MultipleChoice',
   data() {
     return {
-      answers: []
-    }
+      answers: [],
+    };
   },
   components: {
     Message,
@@ -37,54 +37,49 @@ export default {
     question: Object,
   },
   methods: {
-    createAnswerString: function() {
-      
+    createAnswerString() {
       let result = '';
-      for(let i=0; i<this.answers.length; i++) {
-        if(this.answers[i]) {
-          result = result + this.question.content.options[i] + ', ';
+      for (let i = 0; i < this.answers.length; i++) {
+        if (this.answers[i]) {
+          result = `${result + this.question.content.options[i]}, `;
         }
       }
       result = result.slice(0, -2);
       return result;
-    }
+    },
   },
   created() {
-    for(let i=0; i< this.question.content.options.length; i++){
+    for (let i = 0; i < this.question.content.options.length; i++) {
       this.answers.push(false);
     }
   },
   mounted() {
   },
   beforeDestroy() {
+    const answer = this.createAnswerString();
 
-    let answer = this.createAnswerString();
+    const result = {
+      correctAnswer: this.question.content.correctAnswer,
+      questionID: this.question.id,
+      type: this.question.type,
+      answer,
+      title: this.question.content.title,
+      description: this.question.content.description,
+    };
 
+    const questions = JSON.parse(localStorage.getItem('questions'));
 
-    let result = {
-        correctAnswer: this.question.content.correctAnswer,
-        questionID: this.question.id,
-        type: this.question.type,
-        answer: answer,
-        title: this.question.content.title,
-        description: this.question.content.description
-      }
-
-    let questions = JSON.parse(localStorage.getItem('questions'));
-
-    if(!questions) {
-      localStorage.setItem('questions', JSON.stringify([ result ]));
+    if (!questions) {
+      localStorage.setItem('questions', JSON.stringify([result]));
     } else {
-
-      let indexOfQuestion = (questions.map(q => q.questionID)).indexOf(this.question.id)
-      if(indexOfQuestion > -1) {
+      const indexOfQuestion = (questions.map((q) => q.questionID)).indexOf(this.question.id);
+      if (indexOfQuestion > -1) {
         questions.splice(indexOfQuestion, 1);
       }
       questions.push(result);
       localStorage.setItem('questions', JSON.stringify(questions));
     }
-
-  }
+  },
 };
 </script>
 

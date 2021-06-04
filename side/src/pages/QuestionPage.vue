@@ -1,16 +1,15 @@
-  
 <template>
   <div class="question-page" v-if="question">
     <component :is="question.type" v-bind="{ question }"></component>
   </div>
-  
+
 </template>
- 
+
 <script>
-import db from '../firestore'
-import bus from  '../bus'
-import Handwriting from '../components/Handwriting'
-import MultipleChoice from '../components/MultipleChoice'
+import db from '../firestore';
+import bus from '../bus';
+import Handwriting from '../components/Handwriting';
+import MultipleChoice from '../components/MultipleChoice';
 
 export default {
   data() {
@@ -18,26 +17,24 @@ export default {
       isShown: false,
       componentContent: {},
       componentParam: {},
-      questions: []
-    }; 
-     
+      questions: [],
+    };
   },
   computed: {
     question() {
       return this.questions[this.$route.params.index] || 0;
-    }
+    },
   },
   methods: {
-    getQuestions: function() {
-      
-      db.collection("exercises").onSnapshot(snapshot => {
-        let exercises = []
+    getQuestions() {
+      db.collection('exercises').onSnapshot((snapshot) => {
+        const exercises = [];
 
-        snapshot.forEach(doc => {
-          let q = JSON.parse(JSON.stringify(doc.data()))
-          q.id = doc.id
-          exercises.push(q)
-        })
+        snapshot.forEach((doc) => {
+          const q = JSON.parse(JSON.stringify(doc.data()));
+          q.id = doc.id;
+          exercises.push(q);
+        });
 
         this.questions = exercises;
 
@@ -49,15 +46,14 @@ export default {
     this.getQuestions();
   },
   mounted() {
-    bus.$emit('update-title', 'Level Assessment Test') 
+    bus.$emit('update-title', 'Level Assessment Test');
   },
   components: {
     Handwriting,
-    MultipleChoice, 
-    
-  }
-}
+    MultipleChoice,
 
+  },
+};
 
 </script>
 
@@ -78,6 +74,5 @@ li {
 a {
   color: #42b983;
 }
-
 
 </style>

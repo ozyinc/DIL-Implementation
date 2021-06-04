@@ -1,4 +1,3 @@
-  
 <template>
   <div class="result-page" v-if="result">
     <div v-if="loading" class="loader">Loading...</div>
@@ -15,57 +14,54 @@
     </div>
   </div>
 </template>
- 
+
 <script>
-import bus from  '../bus'
-import Message from '../components/Message'
-import QuestionResult from '../components/QuestionResult'
+import bus from '../bus';
+import Message from '../components/Message';
+import QuestionResult from '../components/QuestionResult';
 
 export default {
-    data() {
-        return {
-            result: {},
-            questions: [],
-            loading: true,
-            exercises: []
-        }; 
-        
-    },
-    components: {
-        Message,
-        QuestionResult
-    },
-    methods: {
-        mapQuestionsToExercises: function() {
-            if(!this.questions || this.result.result) return;
+  data() {
+    return {
+      result: {},
+      questions: [],
+      loading: true,
+      exercises: [],
+    };
+  },
+  components: {
+    Message,
+    QuestionResult,
+  },
+  methods: {
+    mapQuestionsToExercises() {
+      if (!this.questions || this.result.result) return;
 
-            for(let i=0; i<this.questions.length; i++) {
-                let indexFromResult = this.result.results.map(q => q.questionID).indexOf(this.questions[i].questionID)
-                if(indexFromResult > -1) {
-                    this.questions[i].evaluation = this.result.results[indexFromResult].result
-                }
-            }
+      for (let i = 0; i < this.questions.length; i++) {
+        const indexFromResult = this.result.results.map((q) => q.questionID).indexOf(this.questions[i].questionID);
+        if (indexFromResult > -1) {
+          this.questions[i].evaluation = this.result.results[indexFromResult].result;
         }
-
-    },
-    created() {
-        this.loading = true;
-        bus.$on('results-arrived', (data) => {
-            this.result = data;
-            this.loading = false;
-
-            this.mapQuestionsToExercises();
-        });
-    
-        this.questions = JSON.parse(localStorage.getItem('questions')) || [];
-
-    },
-    mounted() {
-        bus.$emit('update-title', 'Italian - Level Assessment Result') 
+      }
     },
 
-}
+  },
+  created() {
+    this.loading = true;
+    bus.$on('results-arrived', (data) => {
+      this.result = data;
+      this.loading = false;
 
+      this.mapQuestionsToExercises();
+    });
+
+    this.questions = JSON.parse(localStorage.getItem('questions')) || [];
+  },
+  mounted() {
+    bus.$emit('update-title', 'Italian - Level Assessment Result');
+  },
+
+};
 
 </script>
 
@@ -109,8 +105,6 @@ export default {
   -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
   animation: load6 1.7s infinite ease, round 1.7s infinite ease;
 }
-
-
 
 @-webkit-keyframes load6 {
   0% {
@@ -176,6 +170,5 @@ export default {
     transform: rotate(360deg);
   }
 }
-
 
 </style>
