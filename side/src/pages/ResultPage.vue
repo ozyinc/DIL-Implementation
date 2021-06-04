@@ -1,7 +1,6 @@
   
 <template>
   <div class="result-page" v-if="result">
-    <!-- <p> Results: </p> -->
     <div v-if="loading" class="loader">Loading...</div>
     <div v-if="!loading">
         <message>
@@ -40,7 +39,6 @@ export default {
         mapQuestionsToExercises: function() {
             if(!this.questions || this.result.result) return;
 
-            // let idsOfQuestion = this.questions.map(q => q.questionID)
             for(let i=0; i<this.questions.length; i++) {
                 let indexFromResult = this.result.results.map(q => q.questionID).indexOf(this.questions[i].questionID)
                 if(indexFromResult > -1) {
@@ -77,7 +75,7 @@ export default {
 .result-page {
     position: absolute;
     top: 0;
-    left: 0px;
+    left: 0;
     bottom: 0;
     right: 0;
 }

@@ -1,4 +1,4 @@
-  
+
 <template>
   <div class="result-page">
     <h2> Click here to submit your test: </h2>
@@ -9,7 +9,7 @@
   </router-link>
   </div>
 </template>
- 
+
 <script>
 import bus from  '../bus'
 
@@ -31,15 +31,12 @@ export default {
 
         // check for error response
         if (!response.ok) {
-        console.log("male");
             //get error message from body or default to response statusText
             const error = (data && data.message) || response.statusText;
             return Promise.reject(error);
         }
 
-        console.log("Response text:");
         const data = await response.json();
-        console.log(data);
 
         bus.$emit('results-arrived', data);
 
@@ -47,7 +44,7 @@ export default {
     },
   },
   mounted() {
-    bus.$emit('update-title', 'Level Assessment Test') 
+    bus.$emit('update-title', 'Level Assessment Test')
   },
 
 }

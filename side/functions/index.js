@@ -9,13 +9,10 @@ const ttsclient = new textToSpeech.TextToSpeechClient()
 
 
 const analyseMultipleChoice = function(answer, correct) {
-  return correct == answer;
+  return correct === answer;
 }
 const analyseWriting = async function(answer, correct) {
   functions.logger.info("received image to analyse");
-  // let result = '';
-
-  //base64 image: https://forum.freecodecamp.org/t/unable-to-detect-text-in-a-base64-image-uri-in-google-cloud-vision/421650
 
   //Call Google Vision API
   const client = new vision.ImageAnnotatorClient();
@@ -30,21 +27,18 @@ const analyseWriting = async function(answer, correct) {
       }
   } : fileName;
 
-  
+
   // Read a local image as a text document
   const [result] = await client.documentTextDetection(imageDetectionReq);
   const fullTextAnnotation = result.fullTextAnnotation;
 
-  if(fullTextAnnotation) {
-    console.log(`Full text: ${fullTextAnnotation.text}`) 
-  } else {
-    console.log(`could not detect`) 
+  if(!fullTextAnnotation) {
     return false;
   }
-  
+
   let residue = fullTextAnnotation.text.trim().toLowerCase().replace(correct.toLowerCase(), '');
 
-  return residue.length == 0;
+  return residue.length === 0;
 }
 
 // // Create and Deploy Your First Cloud Functions
@@ -62,13 +56,7 @@ exports.evaluateWriting = functions.runWith({
     memory: "128MB",
   }).https.onRequest(async (request, response) => {
     return cors(request, response, async () => {
-       
-        functions.logger.info("received image to analyse");
-        // let result = '';
 
-        //base64 image: https://forum.freecodecamp.org/t/unable-to-detect-text-in-a-base64-image-uri-in-google-cloud-vision/421650
-
-        //Call Google Vision API
         const client = new vision.ImageAnnotatorClient();
 
         const fileName = './test.png';
@@ -81,36 +69,15 @@ exports.evaluateWriting = functions.runWith({
             }
         } : fileName;
 
-        
+
         // Read a local image as a text document
         const [result] = await client.documentTextDetection(imageDetectionReq);
         const fullTextAnnotation = result.fullTextAnnotation;
 
-        console.log(`Full text: ${fullTextAnnotation.text}`);
-        // fullTextAnnotation.pages.forEach(page => {
-        //     page.blocks.forEach(block => {
-        //         console.log(`Block confidence: ${block.confidence}`);
-        //         block.paragraphs.forEach(paragraph => {
-        //             console.log(`Paragraph confidence: ${paragraph.confidence}`);
-        //             paragraph.words.forEach(word => {
-        //             const wordText = word.symbols.map(s => s.text).join('');
-        //             console.log(`Word text: ${wordText}`);
-        //             console.log(`Word confidence: ${word.confidence}`);
-        //             word.symbols.forEach(symbol => {
-        //                 console.log(`Symbol text: ${symbol.text}`);
-        //                 console.log(`Symbol confidence: ${symbol.confidence}`);
-        //             });
-        //             });
-        //         });
-        //     });
-        // });
-
-
-        // response.json(imageDetectionReq);
         response.json(fullTextAnnotation);
-        
+
     });
-    
+
 });
 
 exports.submitLevelAssessment = functions.runWith({
@@ -120,8 +87,7 @@ exports.submitLevelAssessment = functions.runWith({
   memory: "128MB",
 }).https.onRequest(async (request, response) => {
   return cors(request, response, async () => {
-     
-    //structure: [{questionID:, questionType, correctAnswer, userAnswer:}]
+
     let questions = request.body;
 
     let results={
@@ -141,7 +107,7 @@ exports.submitLevelAssessment = functions.runWith({
             result: result
           });
           break;
-        case 'Handwriting': 
+        case 'Handwriting':
         result = await analyseWriting(questions[i].answer, questions[i].correctAnswer)
         results.results.push({
           questionID: questions[i].questionID,
@@ -159,9 +125,9 @@ exports.submitLevelAssessment = functions.runWith({
     results.level = Math.min(results.level, 5);
 
     response.json(results)
-      
+
   });
-  
+
 });
 
 exports.getSpeechFromText = functions.https.onRequest((request, response) => {

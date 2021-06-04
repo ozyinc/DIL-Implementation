@@ -50,20 +50,16 @@ export default {
     }
   },
   created() {
-    //TODO: TAKE FROM LOCALSTORAGE
     for(let i=0; i< this.question.content.options.length; i++){
       this.answers.push(false);
     }
   },
   mounted() {
-    console.log("this is the question:", this.question.content);
   },
   beforeDestroy() {
-    console.log(this.answers)
 
     let answer = this.createAnswerString();
 
-    console.log(answer)
 
     let result = {
         correctAnswer: this.question.content.correctAnswer,

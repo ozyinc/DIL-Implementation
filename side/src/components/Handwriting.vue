@@ -5,7 +5,6 @@
       <canvas id="myCanvas" width="460" height="260" @mousemove="draw" @mousedown="beginDrawing" @mouseup="stopDrawing" ></canvas>
         <div id="buttons">
           <button id="trashButton" type="button" v-on:click="trashCanvas"><img src="../assets/Trash.svg" /></button>
-          <!--<button id="confirmButton" type="button" v-on:click="confirm">Confirm</button>-->
         </div>
       
     </message>
@@ -117,11 +116,6 @@ export default {
       this.totalVuePackages = data.total;
 
 
-    /*
-    .catch(error => {
-      this.errorMessage = error;
-      console.error("There was an error!", error);
-    });*/
 
      console.log("Good");
     },
@@ -138,8 +132,6 @@ export default {
     this.canvas = c.getContext("2d");
   },
   beforeDestroy() {
-
-    console.log(this.answer)
 
     let result = {
         correctAnswer: this.question.content.correctAnswer,
@@ -169,7 +161,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #myCanvas {
   border: 1px solid grey;

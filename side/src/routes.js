@@ -30,14 +30,10 @@ const routes = [
       path:'/result', 
       component: ResultPage
     }
-    // {
-    //   path:'/questions/:index', 
-    //   component: QuestionPage
-    // }
 ]
 
 const router = new VueRouter({
-    routes // short for `routes: routes`
+    routes
   })
 
 export default router 

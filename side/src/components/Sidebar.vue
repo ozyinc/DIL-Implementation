@@ -1,8 +1,5 @@
 <template>
   <div class="sidebar">
-    <!-- <div class="title">
-          Sidebar
-      </div> -->
     <div class="menu-items">
       <router-link v-for="(q, index) in questions" :key="index"
         :to="`/questions/${index}`"
@@ -15,7 +12,6 @@
           <div class="text">Question {{index + 1}}</div>
 
           <div class="arrow">
-            <!-- <img src="../assets/Rarrow.svg" >-->
           </div>
         </div>
       </router-link>
@@ -31,7 +27,6 @@
           <div class="text">Finalize test</div>
 
           <div class="arrow">
-            <!-- <img src="../assets/Rarrow.svg" >-->
           </div>
         </div>
       </router-link>
@@ -46,7 +41,6 @@
           <div class="text">Back</div>
 
           <div class="arrow">
-            <!-- <img src="../assets/Rarrow.svg" >-->
           </div>
         </div>
       </router-link>

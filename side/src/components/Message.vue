@@ -45,21 +45,14 @@ export default {
       };
 
       const response = await fetch("https://us-central1-chrome-sensor-291917.cloudfunctions.net/getSpeechFromText", requestOptions)
-      //.then(async response => {
-     // const data = await response.json();
-     // this.postId = data.id;
 
-      console.log("Response text:");
-      console.log(response.text);
       const data = await response.json();
-      console.log(data);
 
-      if(!data) {
-        console.log("error")
+      if(data) {
+        player.playMessage(data.audioBuffer.data);
       }
 
       
-      player.playMessage(data.audioBuffer.data);
     },
     stripHtml: function() {
       return this.$refs.message.textContent || this.$refs.message.textContent.innerText || "";
@@ -101,7 +94,6 @@ button {
   padding: 6px 15px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   font-size: 16px;
   margin: -20px 2px;
   cursor: pointer;

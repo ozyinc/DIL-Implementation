@@ -17,7 +17,6 @@ let player = new Vue({
             let audioContext = new AudioContext();
             try {
                 if(buffer.byteLength > 0){
-                    console.log(buffer.byteLength);
                     audioContext.decodeAudioData(
                         buffer,
                         function(buffer){
@@ -36,13 +35,13 @@ let player = new Vue({
 
                             this.playing = true;
                         },
-                        function() {
-                            console.log(arguments);
+                        function(...args) {
+                            console.error(args);
                         }
                     );
                 }
             } catch(e) {
-                console.log(e);
+                console.error(e);
             }
         },
         stopPlayingMessage: () => {

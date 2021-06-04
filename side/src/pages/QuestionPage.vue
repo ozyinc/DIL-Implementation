@@ -38,28 +38,11 @@ export default {
           q.id = doc.id
           exercises.push(q)
         })
-        console.log(exercises)
-        
+
         this.questions = exercises;
 
         bus.$emit('questions-loaded', this.questions);
       });
-    },
-    addNewExercise: function() {
-      // db.collection("exercises").add({
-      //     id: 1,
-      //     difficulty: 1,
-      //     subjectID: 's5okQn6LqUNj1gMIHXES',
-      //     type:'HANDWRITTEN',
-      //     content: {
-      //       title:'question1',
-      //       description: 'blabla',
-      //       image: 'URL',
-      //       correctAnswer: 'ciao'
-      //     }
-      //   }).then((docRef) => {
-      //     console.log("Document written with ID: ", docRef.id);
-      // })
     },
   },
   created() {

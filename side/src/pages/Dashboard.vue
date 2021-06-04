@@ -25,7 +25,6 @@ export default {
 }
 .content {
   
-    /* padding-left: 120px; */
     background-color: #F4F6FB;
     
 }
