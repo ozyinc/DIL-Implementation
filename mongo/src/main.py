@@ -20,12 +20,9 @@ generate(db)
 import query
 
 queries_to_run = [
-    # Present & Document
     query.student_count_eligible_for_events,
-    ### Mention & Document
-    query.hard_to_solve, # Hardness of exercise
+    query.hard_to_solve,
     query.get_colliding_event_ids_per_location,
-    ### Just chill here
     query.already_attended_events_suggested,
     query.already_solved_exercises_suggested,
     query.event_suggestions_collide_with_busy_hours,
